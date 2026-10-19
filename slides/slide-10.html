@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SpecWatt · Conclusions and Next Steps</title>
+  <link rel="stylesheet" href="theme.css">
+  <style>
+    .closing-layout { display: grid; grid-template-columns: 1.05fr .95fr; gap: 70px; height: 100%; align-items: start; padding-top: 18px; }
+    .claim { margin: 0 0 34px; color: var(--navy); font-size: 35px; font-weight: 760; line-height: 1.34; }
+    .claim strong { color: var(--blue); }
+    .evidence-list { margin: 0; padding: 0; list-style: none; }
+    .evidence-list li { position: relative; margin: 0 0 22px; padding-left: 42px; color: var(--body); font-size: 22px; line-height: 1.4; }
+    .evidence-list li::before { content: "✓"; position: absolute; left: 0; top: -1px; color: var(--green); font-size: 26px; font-weight: 820; }
+    .next-steps { padding-left: 42px; border-left: 2px solid var(--line); }
+    .next-step { display: grid; grid-template-columns: 46px 1fr; gap: 18px; margin-top: 27px; }
+    .next-step .index { color: var(--blue); font-size: 20px; font-weight: 820; }
+    .next-step h3 { margin: 0 0 6px; color: var(--navy); font-size: 25px; font-weight: 760; }
+    .next-step p { margin: 0; color: var(--body); font-size: 20px; line-height: 1.42; }
+    .closing-line { position: absolute; left: 90px; right: 90px; bottom: 97px; height: 2px; background: var(--line); transform-origin: left; transform: scaleX(0); }
+    body.is-active .closing-line { animation: closing-rule 800ms 560ms ease forwards; }
+    @keyframes closing-rule { to { transform: scaleX(1); } }
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <section class="slide">
+      <div class="kicker reveal">04 / Conclusions · Midterm Status</div>
+      <h1 class="slide-title reveal" style="--delay:70ms">A Reproducible Midterm Result with Clear Boundaries</h1>
+      <main class="slide-content" style="bottom:132px">
+        <div class="closing-layout">
+          <section class="reveal" style="--delay:140ms">
+            <p class="eyebrow">What the evidence supports</p>
+            <p class="claim">A30 verification for q = 3, 5, and 9 costs about one target decode. At 50% acceptance, modeled time per token <strong>beats target-only decoding</strong>.</p>
+            <ul class="evidence-list">
+              <li>Kernel shapes are complete for draft, target decode, and verification.</li>
+              <li>Structural checks and profiler comparisons pass with zero failures.</li>
+              <li>Commands, versions, hashes, and result tables are recorded.</li>
+              <li>A100 GEMM-only energy results show high-acceptance savings.</li>
+            </ul>
+          </section>
+          <section class="next-steps reveal" style="--delay:300ms">
+            <p class="eyebrow">Next experiments</p>
+            <div class="next-step"><span class="index">01</span><div><h3>Price asymmetric attention</h3><p>Pass q length and KV length separately for q = 1, 3, 5, and 9.</p></div></div>
+            <div class="next-step"><span class="index">02</span><div><h3>Measure real acceptance</h3><p>Replace fixed counts with SDController traces from a documented prompt set.</p></div></div>
+            <div class="next-step"><span class="index">03</span><div><h3>Expand the sweep</h3><p>Evaluate additional model pairs, context lengths, batches, and hardware after full pricing works.</p></div></div>
+          </section>
+        </div>
+      </main>
+      <div class="closing-line"></div>
+      <footer class="slide-footer"><span>SpecWatt · Midterm Presentation</span><span class="number">10</span></footer>
+      <aside hidden aria-label="Presenter notes">Close with the strongest supported claim, then keep the A100 caveat explicit. The next sequence is attention support, measured acceptance, and only then broader sweeps.</aside>
+    </section>
+  </div>
+  <script src="../scripts/slide-runtime.js"></script>
+</body>
+</html>

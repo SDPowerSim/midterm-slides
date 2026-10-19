@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SpecWatt · A30 Step Latency</title>
+  <link rel="stylesheet" href="theme.css">
+  <style>
+    .latency-layout { --left: 1.55fr; --right: 1fr; }
+    .bar-chart { position: relative; height: 500px; padding: 24px 20px 58px 80px; }
+    .bar-grid { position: absolute; left: 80px; right: 20px; top: 24px; bottom: 58px; display: flex; flex-direction: column; justify-content: space-between; }
+    .bar-grid span { position: relative; width: 100%; height: 0; border-top: 1px solid #dce5ed; }
+    .bar-grid span::before { content: attr(data-value); position: absolute; right: calc(100% + 14px); top: -11px; color: var(--muted); font-size: 17px; }
+    .bar-axis-label { position: absolute; left: 14px; top: 176px; writing-mode: vertical-rl; transform: rotate(180deg); color: var(--navy); font-size: 19px; font-weight: 720; }
+    .bars { position: absolute; left: 101px; right: 36px; top: 24px; bottom: 58px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 24px; align-items: end; }
+    .bar-group { height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; }
+    .bar-value { margin-bottom: 10px; color: var(--navy); font-size: 21px; font-weight: 780; opacity: 0; transition: opacity 240ms ease 720ms; }
+    .bar { width: 78%; height: var(--height); min-height: 8px; background: var(--color); border-radius: 4px 4px 0 0; transform: scaleY(0); transform-origin: bottom; }
+    .bar-label { position: absolute; top: calc(100% + 12px); width: 130px; color: var(--body); font-size: 17px; font-weight: 680; line-height: 1.2; text-align: center; }
+    body.is-active .bar { animation: grow-bar 700ms cubic-bezier(.2,.8,.2,1) forwards; animation-delay: var(--delay); }
+    body.is-active .bar-value { opacity: 1; }
+    @keyframes grow-bar { to { transform: scaleY(1); } }
+    .latency-summary .metric { margin-top: 13px; }
+    .latency-summary .context { margin: 3px 0 25px; color: var(--muted); font-size: 19px; }
+    .compare { margin: 0; color: var(--body); font-size: 23px; line-height: 1.46; }
+    .compare strong { color: var(--navy); }
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <section class="slide">
+      <div class="kicker reveal">03 / Evaluation · A30 Simulation</div>
+      <h1 class="slide-title reveal" style="--delay:70ms">Verification Costs About One Target Decode</h1>
+      <main class="slide-content">
+        <div class="two-column latency-layout">
+          <figure class="bar-chart reveal" style="--delay:120ms" aria-label="A30 step latency bar chart">
+            <div class="bar-grid"><span data-value="12"></span><span data-value="10"></span><span data-value="8"></span><span data-value="6"></span><span data-value="4"></span><span data-value="2"></span><span data-value="0"></span></div>
+            <div class="bar-axis-label">Latency (ms)</div>
+            <div class="bars">
+              <div class="bar-group"><div class="bar-value">4.62</div><div class="bar" style="--height:161px;--color:var(--blue-bright);--delay:180ms"></div><div class="bar-label">Draft<br>q = 1</div></div>
+              <div class="bar-group"><div class="bar-value">10.65</div><div class="bar" style="--height:371px;--color:#4d5c6b;--delay:280ms"></div><div class="bar-label">Target<br>q = 1</div></div>
+              <div class="bar-group"><div class="bar-value">11.01</div><div class="bar" style="--height:384px;--color:var(--orange);--delay:380ms"></div><div class="bar-label">Verify<br>q = 3</div></div>
+              <div class="bar-group"><div class="bar-value">11.03</div><div class="bar" style="--height:385px;--color:var(--orange);--delay:480ms"></div><div class="bar-label">Verify<br>q = 5</div></div>
+              <div class="bar-group"><div class="bar-value">11.23</div><div class="bar" style="--height:392px;--color:var(--orange);--delay:580ms"></div><div class="bar-label">Verify<br>q = 9</div></div>
+            </div>
+          </figure>
+          <aside class="summary latency-summary reveal" style="--delay:330ms">
+            <p class="eyebrow">Measured relationship</p>
+            <p class="metric">1.03× <span class="metric-unit">to 1.05×</span></p>
+            <p class="context">verification / target decode latency</p>
+            <p class="compare">A single q = 3, 5, or 9 verification forward costs only slightly more than a q = 1 target decode.</p>
+            <hr class="rule">
+            <p class="takeaway">Verification is far cheaper than <strong>q serial target calls.</strong></p>
+          </aside>
+        </div>
+      </main>
+      <footer class="slide-footer"><span class="source">LLMServingSim 2.0 / ASTRA-Sim · NVIDIA A30 profile-driven simulation</span><span class="number">6</span></footer>
+      <aside hidden aria-label="Presenter notes">Read the bars from draft to q equals nine. The near-flat verification cost is the amortization behavior speculative decoding needs.</aside>
+    </section>
+  </div>
+  <script src="../scripts/slide-runtime.js"></script>
+</body>
+</html>

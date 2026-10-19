@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SpecWatt · Title</title>
+  <link rel="stylesheet" href="theme.css">
+  <style>
+    .cover .kicker { top: 64px; }
+    .cover-title { position: absolute; left: 90px; top: 155px; width: 1060px; margin: 0; }
+    .cover-name { display: block; color: var(--navy); font-size: 106px; font-weight: 830; line-height: 1; letter-spacing: -.055em; }
+    .cover-subtitle { display: block; margin-top: 26px; color: var(--navy); font-size: 48px; font-weight: 740; line-height: 1.18; letter-spacing: -.03em; }
+    .cover-rule { position: absolute; left: 90px; right: 90px; top: 515px; height: 2px; background: var(--line); transform-origin: left; transform: scaleX(0); }
+    body.is-active .cover-rule { animation: cover-rule 720ms 260ms ease forwards; }
+    @keyframes cover-rule { to { transform: scaleX(1); } }
+    .cover-meta { position: absolute; left: 90px; right: 90px; top: 564px; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; }
+    .cover-meta h2 { margin: 0 0 10px; color: var(--blue); font-size: 17px; letter-spacing: .1em; text-transform: uppercase; }
+    .cover-meta p { margin: 0; color: var(--body); font-size: 26px; line-height: 1.45; }
+    .cover-meta .presenters { justify-self: end; min-width: 575px; }
+    .cover-meta .presenters p { color: var(--navy); font-weight: 720; }
+    .token-trace { position: absolute; right: 102px; top: 91px; display: flex; gap: 10px; align-items: center; }
+    .token-trace span { width: 16px; height: 16px; border-radius: 50%; background: var(--blue-soft); opacity: .35; }
+    body.is-active .token-trace span { animation: token-pulse 2.4s ease-in-out infinite; animation-delay: calc(var(--i) * 130ms); }
+    @keyframes token-pulse { 0%, 55%, 100% { background: var(--blue-soft); transform: scale(1); opacity: .35; } 24% { background: var(--blue); transform: scale(1.45); opacity: 1; } }
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <section class="slide cover">
+      <div class="kicker reveal">Midterm Presentation · EECS E6894 · Fall 2026</div>
+      <div class="token-trace" aria-hidden="true">
+        <span style="--i:0"></span><span style="--i:1"></span><span style="--i:2"></span><span style="--i:3"></span><span style="--i:4"></span>
+      </div>
+      <h1 class="cover-title">
+        <span class="cover-name reveal" style="--delay:80ms">SpecWatt</span>
+        <span class="cover-subtitle reveal" style="--delay:180ms">Simulating Power Consumption<br>of Speculative Decoding</span>
+      </h1>
+      <div class="cover-rule"></div>
+      <div class="cover-meta">
+        <div class="reveal" style="--delay:380ms">
+          <h2>Project</h2>
+          <p>Reproducible kernel-level evaluation<br>with LLMServingSim 2.0 and EnergAIzer</p>
+        </div>
+        <div class="presenters reveal" style="--delay:480ms">
+          <h2>Presented by</h2>
+          <p>Shurui Hu · Jinglin Xie · Muyun Yang</p>
+        </div>
+      </div>
+      <footer class="slide-footer"><span>Columbia University</span><span class="number">1</span></footer>
+      <aside hidden aria-label="Presenter notes">Open with the project question: can speculative decoding reduce energy per generated token, not only latency? Introduce the 1B draft and 3B target configuration.</aside>
+    </section>
+  </div>
+  <script src="../scripts/slide-runtime.js"></script>
+</body>
+</html>

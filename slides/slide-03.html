@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SpecWatt · Evaluation Pipeline</title>
+  <link rel="stylesheet" href="theme.css">
+  <style>
+    .pipeline { position: relative; height: 338px; margin-top: 42px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 28px; align-items: center; }
+    .pipeline-track { position: absolute; left: 90px; right: 90px; top: 167px; height: 3px; background: var(--line); }
+    .pipeline-signal { position: absolute; left: 78px; top: 155px; width: 27px; height: 27px; border: 5px solid #fff; border-radius: 50%; background: var(--blue); box-shadow: 0 0 0 2px var(--blue); opacity: 0; }
+    body.is-active .pipeline-signal { animation: signal-run 6.4s .65s ease-in-out infinite; }
+    @keyframes signal-run {
+      0% { left: 78px; opacity: 0; }
+      5%, 17% { left: 78px; opacity: 1; }
+      24%, 36% { left: 381px; opacity: 1; }
+      43%, 55% { left: 684px; opacity: 1; }
+      62%, 74% { left: 987px; opacity: 1; }
+      81%, 95% { left: 1290px; opacity: 1; }
+      100% { left: 1290px; opacity: 0; }
+    }
+    .pipeline-step { position: relative; z-index: 2; min-height: 206px; padding: 30px 23px 26px; background: #fff; border-top: 4px solid var(--line); text-align: left; }
+    .pipeline-step .index { display: block; margin-bottom: 22px; color: var(--blue); font-size: 18px; font-weight: 820; letter-spacing: .08em; }
+    .pipeline-step h2 { margin: 0 0 10px; color: var(--navy); font-size: 25px; font-weight: 770; line-height: 1.24; }
+    .pipeline-step p { margin: 0; color: var(--body); font-size: 19px; line-height: 1.42; }
+    body.is-active .pipeline-step { animation: step-focus 6.4s .65s ease-in-out infinite; animation-delay: calc(.65s + var(--step) * 1.22s); }
+    @keyframes step-focus { 0%, 19%, 100% { border-top-color: var(--line); background: #fff; transform: translateY(0); } 5%, 14% { border-top-color: var(--blue); background: #f5f9fd; transform: translateY(-8px); } }
+    .pipeline-note { display: grid; grid-template-columns: 1fr 1fr; gap: 45px; margin-top: 36px; padding-top: 26px; border-top: 1px solid var(--line); }
+    .pipeline-note p { margin: 0; color: var(--body); font-size: 22px; line-height: 1.4; }
+    .pipeline-note strong { color: var(--navy); }
+    .next-path { color: var(--muted) !important; }
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <section class="slide">
+      <div class="kicker reveal">02 / Method · Reproducible Evidence Chain</div>
+      <h1 class="slide-title reveal" style="--delay:70ms">The Current Midterm Pipeline</h1>
+      <main class="slide-content">
+        <div class="pipeline reveal" style="--delay:140ms">
+          <div class="pipeline-track"></div><div class="pipeline-signal"></div>
+          <section class="pipeline-step" style="--step:0"><span class="index">01</span><h2>Freeze the workload</h2><p>1B draft, 3B target, context 512, k = 2, 4, 8</p></section>
+          <section class="pipeline-step" style="--step:1"><span class="index">02</span><h2>Export shapes</h2><p>Canonical GEMM and attention geometry for every layer</p></section>
+          <section class="pipeline-step" style="--step:2"><span class="index">03</span><h2>Validate</h2><p>Structural checks and PyTorch profiler comparisons</p></section>
+          <section class="pipeline-step" style="--step:3"><span class="index">04</span><h2>Price operators</h2><p>A30 simulation and A100 EnergAIzer estimates</p></section>
+          <section class="pipeline-step" style="--step:4"><span class="index">05</span><h2>Compute per token</h2><p>Fixed acceptance sweeps and break-even rates</p></section>
+        </div>
+        <div class="pipeline-note reveal" style="--delay:320ms">
+          <p><strong>Current evidence:</strong> deterministic inputs, checked shapes, versioned artifacts, and reproducible result tables.</p>
+          <p class="next-path"><strong>Next integration:</strong> SDController traces will replace fixed acceptance rates after full operator pricing works.</p>
+        </div>
+      </main>
+      <footer class="slide-footer"><span>Animated sequence replays when the slide opens</span><span class="number">3</span></footer>
+      <aside hidden aria-label="Presenter notes">Walk through the five stages. Emphasize that the current midterm result deliberately uses fixed acceptance rates. Real controller acceptance belongs to the next phase.</aside>
+    </section>
+  </div>
+  <script src="../scripts/slide-runtime.js"></script>
+</body>
+</html>

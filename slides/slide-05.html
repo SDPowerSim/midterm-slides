@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SpecWatt · Validation Evidence</title>
+  <link rel="stylesheet" href="theme.css">
+  <style>
+    .validation-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 34px; margin-top: 60px; }
+    .validation-item { min-height: 260px; padding: 28px 22px 22px; border-top: 4px solid var(--blue); }
+    .validation-item:nth-child(2) { border-color: var(--green); }
+    .validation-item:nth-child(3) { border-color: var(--orange); }
+    .validation-item:nth-child(4) { border-color: #8799aa; }
+    .validation-number { display: block; color: var(--navy); font-size: 77px; font-weight: 820; line-height: 1.08; letter-spacing: -.045em; }
+    .validation-item h2 { margin: 18px 0 9px; color: var(--navy); font-size: 24px; font-weight: 760; line-height: 1.28; }
+    .validation-item p { margin: 0; color: var(--body); font-size: 19px; line-height: 1.42; }
+    .validation-result { display: flex; align-items: center; justify-content: space-between; margin-top: 62px; padding: 28px 34px; background: #f4f8fb; border-left: 6px solid var(--green); }
+    .validation-result strong { color: var(--green); font-size: 38px; font-weight: 820; }
+    .validation-result span { color: var(--body); font-size: 22px; }
+    .validation-result code { color: var(--muted); font-size: 17px; }
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <section class="slide">
+      <div class="kicker reveal">02 / Method · Validation</div>
+      <h1 class="slide-title reveal" style="--delay:70ms">The Kernel Inventory Matches Runtime Evidence</h1>
+      <main class="slide-content">
+        <div class="validation-grid">
+          <section class="validation-item reveal" style="--delay:130ms"><span class="validation-number" data-count="382">0</span><h2>Structural checks</h2><p>Scenario membership, row count, and dimensions</p></section>
+          <section class="validation-item reveal" style="--delay:210ms"><span class="validation-number" data-count="450">0</span><h2>PyTorch comparisons</h2><p>Operator shapes from eager profiler traces</p></section>
+          <section class="validation-item reveal" style="--delay:290ms"><span class="validation-number" data-count="445">0</span><h2>Artifact files</h2><p>SHA256 manifest entries verified</p></section>
+          <section class="validation-item reveal" style="--delay:370ms"><span class="validation-number" data-count="5">0</span><h2>Simulation scenarios</h2><p>Draft, target, and three verification queries</p></section>
+        </div>
+        <div class="validation-result reveal" style="--delay:480ms"><strong>0 failures</strong><span>Canonical shapes and runtime observations agree</span><code>SHA256 2f8700d9...a4e47b</code></div>
+      </main>
+      <footer class="slide-footer"><span>Versioned SpecWatt, LLMServingSim, ASTRA-Sim, and EnergAIzer artifacts</span><span class="number">5</span></footer>
+      <aside hidden aria-label="Presenter notes">Use this slide to establish trust before presenting performance. The structural checks and profiler comparisons both pass with zero failures.</aside>
+    </section>
+  </div>
+  <script>
+    (function () {
+      let frame = null;
+      function run() {
+        cancelAnimationFrame(frame);
+        const start = performance.now();
+        const duration = 720;
+        const items = Array.from(document.querySelectorAll('[data-count]'));
+        function update(now) {
+          const progress = Math.min(1, (now - start) / duration);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          items.forEach(function (item) { item.textContent = Math.round(Number(item.dataset.count) * eased).toLocaleString(); });
+          if (progress < 1) frame = requestAnimationFrame(update);
+        }
+        frame = requestAnimationFrame(update);
+      }
+      window.addEventListener('slideactive', run);
+    })();
+  </script>
+  <script src="../scripts/slide-runtime.js"></script>
+</body>
+</html>

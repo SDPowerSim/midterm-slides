@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SpecWatt · A30 Time per Token</title>
+  <link rel="stylesheet" href="theme.css">
+  <style>
+    .time-layout { --left: 1.62fr; --right: 1fr; }
+    .chart-wrap { margin: 0; width: 100%; }
+    .chart-wrap figcaption { margin: 2px 0 0 76px; color: var(--muted); font-size: 16px; }
+    .break-even { margin: 13px 0 8px; color: var(--blue); font-size: 74px; font-weight: 820; line-height: 1; letter-spacing: -.05em; }
+    .full-accept { margin: 26px 0 0; padding-top: 22px; border-top: 1px solid var(--line); color: var(--body); font-size: 21px; line-height: 1.5; }
+    .full-accept strong { color: var(--navy); }
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <section class="slide">
+      <div class="kicker reveal">03 / Evaluation · A30 Time per Generated Token</div>
+      <h1 class="slide-title reveal" style="--delay:70ms">All Tested k Values Break Even at 50% Acceptance</h1>
+      <main class="slide-content">
+        <div class="two-column time-layout">
+          <figure class="chart-wrap reveal" style="--delay:120ms">
+            <div data-line-chart>
+              <script type="application/json">{"width":900,"height":475,"xMin":0,"xMax":1,"yMin":0,"yMax":52,"xLabel":"Acceptance rate","yLabel":"Simulated time (ms/token)","xTicks":[{"value":0,"label":"0%"},{"value":0.25,"label":"25%"},{"value":0.5,"label":"50%"},{"value":0.75,"label":"75%"},{"value":1,"label":"100%"}],"yTicks":[0,10,20,30,40,50],"baseline":{"value":10.654134,"label":"Target baseline 10.65"},"series":[{"name":"k = 2","values":[[0,20.25423],[0.5,10.127115],[1,6.75141]]},{"name":"k = 4","values":[[0,29.520383],[0.25,14.760192],[0.5,9.840128],[0.75,7.380096],[1,5.904077]]},{"name":"k = 8","values":[[0,48.220007],[0.125,24.110004],[0.25,16.073336],[0.375,12.055002],[0.5,9.644001],[0.625,8.036668],[0.75,6.888572],[0.875,6.027501],[1,5.357779]]}],"ariaLabel":"A30 simulated time per generated token against acceptance rate"}</script>
+            </div>
+            <figcaption>Fixed accepted-token counts within each speculative round.</figcaption>
+          </figure>
+          <aside class="summary reveal" style="--delay:330ms">
+            <p class="eyebrow">First winning point</p>
+            <p class="break-even">50%</p>
+            <p class="body-copy">Accepted counts are 1 of 2, 2 of 4, and 4 of 8. Each curve falls below the target-only baseline.</p>
+            <p class="full-accept"><strong>At full acceptance</strong><br>k = 2: 6.75 ms/token<br>k = 4: 5.90 ms/token<br>k = 8: 5.36 ms/token</p>
+          </aside>
+        </div>
+      </main>
+      <footer class="slide-footer"><span class="source">A30 profile-driven result · Fixed acceptance sweep</span><span class="number">7</span></footer>
+      <aside hidden aria-label="Presenter notes">The first tested point below the target baseline is 50 percent acceptance for all three k values. At full acceptance, larger k produces lower modeled time per token.</aside>
+    </section>
+  </div>
+  <script src="../scripts/chart.js"></script>
+  <script src="../scripts/slide-runtime.js"></script>
+</body>
+</html>
