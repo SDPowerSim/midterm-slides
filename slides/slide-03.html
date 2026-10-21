@@ -3,23 +3,32 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>SpecWatt · Kernel Workloads and Validation</title>
+  <title>SpecWatt · Kernel Workload Settings</title>
   <link rel="stylesheet" href="theme.css">
   <style>
-    .kernel-layout { display: grid; grid-template-rows: 395px 1fr; gap: 20px; height: 100%; }
-    .geometry { display: grid; grid-template-columns: 1fr 1fr 1.08fr; gap: 32px; align-items: stretch; }
+    .kernel-layout { display: grid; grid-template-rows: auto 1fr auto; gap: 16px; height: 100%; }
+    .main-settings { margin-top: 16px; padding-top: 4px; }
+    .scope-note { margin: 0; padding-top: 12px; border-top: 2px solid var(--line); color: var(--blue); font-size: 19px; font-weight: 750; line-height: 1.4; }
+    .settings-summary { margin: 0; color: var(--body); font-size: 18px; line-height: 1.4; }
+    .settings-summary strong { color: var(--blue); }
+    .geometry { display: grid; grid-template-columns: 1fr 1.85fr; gap: 32px; align-items: stretch; }
     .lane { padding: 19px 22px 15px; border-top: 5px solid var(--blue); background: #fff; }
     .lane.draft { border-color: var(--green); }
-    .lane.verify { border-color: var(--orange); }
     .lane h2 { margin: 0 0 5px; color: var(--navy); font-size: 25px; font-weight: 780; }
     .lane .model { margin: 0 0 15px; color: var(--body); font-size: 18px; }
-    .lane dl { margin: 0; display: grid; grid-template-columns: 120px 1fr; column-gap: 14px; row-gap: 8px; font-size: 17px; line-height: 1.23; }
+    .lane dl { margin: 0; display: grid; grid-template-columns: 200px 1fr; column-gap: 14px; row-gap: 8px; font-size: 17px; line-height: 1.23; }
     .lane dt { color: var(--muted); }
     .lane dd { margin: 0; color: var(--ink); font-weight: 690; }
-    .shape-strip { margin-top: 15px; padding-top: 12px; border-top: 1px solid var(--line); }
-    .shape-strip span { display: block; margin-bottom: 5px; color: var(--muted); font-size: 13px; font-weight: 760; letter-spacing: .07em; text-transform: uppercase; }
-    .shape-strip code { color: var(--navy); font-size: 16px; line-height: 1.35; white-space: normal; }
-    .validation { display: grid; grid-template-columns: 1.12fr 1fr 1fr 1fr; gap: 24px; padding-top: 17px; border-top: 2px solid var(--line); }
+    .target-settings { display: grid; grid-template-columns: 1fr 1.22fr; gap: 28px; }
+    .query-sweep { padding-left: 24px; border-left: 2px solid var(--line); }
+    .query-sweep h3 { margin: 0 0 8px; color: var(--blue); font-size: 20px; font-weight: 780; }
+    .query-values { margin: 0 0 12px; color: var(--navy); font-size: 23px; font-weight: 760; line-height: 1.35; }
+    .query-values span { display: block; color: var(--orange); }
+    .query-explanation { margin: 0; color: var(--body); font-size: 18px; line-height: 1.4; }
+    .slide-footer { justify-content: flex-end; }
+    .validation-section { padding-top: 17px; border-top: 2px solid var(--line); }
+    .main-settings-title, .validation-title { margin: 0 0 14px; color: var(--navy); font-size: 25px; font-weight: 780; line-height: 1.2; }
+    .validation { display: grid; grid-template-columns: 1.12fr 1fr 1fr 1fr; gap: 18px 24px; }
     .validation-item { padding: 12px 14px 0; border-top: 3px solid var(--blue); }
     .validation-item:nth-child(2) { border-color: var(--green); }
     .validation-item:nth-child(3) { border-color: var(--orange); }
@@ -34,27 +43,37 @@
 <body>
   <div class="stage">
     <section class="slide">
-      <div class="kicker reveal">02 / Method · Frozen Workloads and Runtime Evidence</div>
-      <h1 class="slide-title reveal" style="--delay:70ms">Kernel Workloads and Validation</h1>
+      <div class="kicker reveal">02 / Experiment Settings · Models and Query-Length Sweep</div>
+      <h1 class="slide-title reveal" style="--delay:70ms">Kernel Workload Settings</h1>
       <main class="slide-content">
         <div class="kernel-layout">
-          <div class="geometry">
+          <div class="workloads">
+            <h2 class="main-settings-title reveal" id="main-settings-title" style="--delay:100ms">Main Settings</h2>
+            <div class="geometry">
             <section class="lane draft reveal" style="--delay:120ms">
-              <h2>Draft decode</h2><p class="model">Llama-3.2-1B · q = 1</p>
-              <dl><dt>Layers</dt><dd>16</dd><dt>Hidden width</dt><dd>2,048</dd><dt>GQA</dt><dd>32 query / 8 KV</dd><dt>Head size</dt><dd>64</dd><dt>KV after</dt><dd>513</dd></dl>
-              <div class="shape-strip"><span>Example GEMM</span><code>Q projection (1, 2048, 2048)</code></div>
+              <h2>Draft model</h2><p class="model">Llama-3.2-1B · single-token forward (q = 1)</p>
+              <dl><dt>Layers</dt><dd>16</dd><dt>Hidden width</dt><dd>2,048</dd><dt>Attention heads</dt><dd>32 Q / 8 K / 8 V</dd><dt>Head size</dt><dd>64</dd><dt>KV cache length</dt><dd>513</dd></dl>
             </section>
             <section class="lane reveal" style="--delay:210ms">
-              <h2>Target decode</h2><p class="model">Llama-3.2-3B · q = 1</p>
-              <dl><dt>Layers</dt><dd>28</dd><dt>Hidden width</dt><dd>3,072</dd><dt>GQA</dt><dd>24 query / 8 KV</dd><dt>Head size</dt><dd>128</dd><dt>KV after</dt><dd>513</dd></dl>
-              <div class="shape-strip"><span>Example GEMM</span><code>Q projection (1, 3072, 3072)</code></div>
+              <h2>Target model</h2><p class="model">Llama-3.2-3B · same model, varying query length</p>
+              <div class="target-settings">
+                <div>
+                  <dl><dt>Layers</dt><dd>28</dd><dt>Hidden width</dt><dd>3,072</dd><dt>Attention heads</dt><dd>24 Q / 8 K / 8 V</dd><dt>Head size</dt><dd>128</dd><dt>KV cache length</dt><dd>512 + q</dd></dl>
+                </div>
+                <div class="query-sweep">
+                  <h3>Query-length sweep</h3>
+                  <p class="query-values">q = 1: decode baseline<span>q = 3, 5, 9: longer queries</span></p>
+                  <p class="query-explanation">Increase q in one target forward to approximate kernel workloads of verification process.</p>
+                </div>
+              </div>
             </section>
-            <section class="lane verify reveal" style="--delay:300ms">
-              <h2>Target verification</h2><p class="model">Llama-3.2-3B · q = k + 1</p>
-              <dl><dt>Query lengths</dt><dd>3, 5, 9</dd><dt>Hidden width</dt><dd>3,072</dd><dt>GQA</dt><dd>24 query / 8 KV</dd><dt>Head size</dt><dd>128</dd><dt>KV after</dt><dd>512 + q</dd></dl>
-              <div class="shape-strip"><span>Attention geometry</span><code>(q, 512 + q, 24, 8, 128)</code></div>
-            </section>
+            </div>
+            <div class="main-settings reveal" style="--delay:300ms">
+              <p class="settings-summary"><strong>q = query tokens per forward pass</strong> · Batch size = 1 · BF16 · KV context = 512 · TP = 1 · k ∈ {2, 4, 8}</p>
+            </div>
           </div>
+          <section class="validation-section" aria-labelledby="validation-title">
+          <h2 class="validation-title reveal" id="validation-title" style="--delay:330ms">Workload Validation</h2>
           <div class="validation" aria-label="Validation summary">
             <section class="validation-item reveal" style="--delay:360ms"><span class="validation-number" data-count="1812">0</span><h3>Operator records</h3><p>Five canonical scenarios across all layers</p></section>
             <section class="validation-item reveal" style="--delay:420ms"><span class="validation-number" data-count="382">0</span><h3>Structural checks</h3><p>Membership, counts, and dimensions</p></section>
@@ -62,10 +81,12 @@
             <section class="validation-item reveal" style="--delay:540ms"><span class="validation-number" data-count="445">0</span><h3>Hashed artifacts</h3><p>Commands, versions, logs, and outputs</p></section>
             <p class="validation-note reveal" style="--delay:610ms"><strong>0 failures.</strong> A30 kernel profiles and simulator scenarios cover q = 1, 3, 5, and 9; eager PyTorch shape traces cover q = 1 and 5.</p>
           </div>
+          </section>
+          <p class="scope-note reveal" style="--delay:650ms">Current scope: Use larger q to approximate the main verification workload.</p>
         </div>
       </main>
-      <footer class="slide-footer"><span>Batch 1 · BF16 · context 512 · TP = 1 · k ∈ {2, 4, 8}</span><span class="number">3</span></footer>
-      <aside hidden aria-label="Presenter notes">Shurui, about 75 seconds. Explain the three execution types and the q equals k plus one relationship. State the validation boundary precisely: eager PyTorch comparisons cover q equals one and five, while the A30 kernel profile and simulator cover q equals one, three, five, and nine.</aside>
+      <footer class="slide-footer"><span class="number">3</span></footer>
+      <aside hidden aria-label="Presenter notes">Shurui, about 75 seconds. Introduce two model configurations: the 1B draft at q equals one and the 3B target with a query-length sweep. q is the number of query tokens in one forward pass, with batch size fixed at one. Target q equals one is the decode baseline; q equals three, five, and nine supplies kernel workloads with the shapes expected for verification at k equals two, four, and eight. This is a kernel workload proxy, not an executed speculative acceptance/rejection pipeline. Then introduce workload validation: eager PyTorch comparisons cover q equals one and five, while the A30 kernel profile and simulator cover q equals one, three, five, and nine.</aside>
     </section>
   </div>
   <script>
