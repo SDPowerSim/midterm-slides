@@ -29,7 +29,7 @@
     });
     current = target;
     progress.style.width = `${(current + 1) / slides.length * 100}%`;
-    deck.setAttribute('aria-label', `SpecWatt slide ${current + 1} of ${slides.length}`);
+    deck.setAttribute('aria-label', `P11 slide ${current + 1} of ${slides.length}`);
     if (updateHash) history.replaceState(null, '', `#${current + 1}`);
     window.focus();
   }
