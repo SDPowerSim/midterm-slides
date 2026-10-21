@@ -42,7 +42,7 @@
 <body>
   <div class="stage">
     <section class="slide">
-      <div class="kicker reveal">03 / Evaluation · A30 Profile-Driven Simulation</div>
+      <div class="kicker reveal">03 / Evaluation · Simulated Latency</div>
       <h1 class="slide-title reveal" style="--delay:70ms">Fast Drafting, Low Overhead from Larger q</h1>
       <main class="slide-content">
         <div class="two-column latency-layout">
@@ -66,7 +66,7 @@
             <p class="eyebrow">Simulation Findings</p>
             <section class="finding">
               <h2>1 / Fast drafting</h2>
-              <p>Draft q = 1 takes <strong>4.62 ms</strong>, versus <strong>10.65 ms</strong> for target q = 1.</p>
+              <p>At q = 1, the target model has <strong>2.31 times the latency</strong> of the draft model.</p>
             </section>
             <section class="finding">
               <h2>2 / Larger q adds little latency</h2>
@@ -81,7 +81,7 @@
           </svg>
         </div>
       </main>
-      <footer class="slide-footer"><span class="source">LLMServingSim 2.0 · Step latencies simulated by ASTRA-Sim using native NVIDIA A30 kernel profiles with dummy weights.</span><span class="number">4</span></footer>
+      <footer class="slide-footer"><span class="source">LLMServingSim 2.0 · Step latencies simulated by ASTRA-Sim using CloudLAB NVIDIA A30 kernel profiles with dummy weights.</span><span class="number">4</span></footer>
       <aside hidden aria-label="Presenter notes">Shurui, about 70 seconds. Present two findings from profile-driven simulation. First, draft q equals one takes 4.62 ms versus 10.65 ms for target q equals one, a 2.31 times latency ratio. Second, increasing target q to three, five, or nine processes more query tokens in parallel while latency rises to only 1.03 to 1.05 times the q equals one baseline. The longer-query workloads approximate the main kernel work of verification. Together, fast drafting and low additional target latency motivate speculative decoding as an acceleration strategy worth modeling. These are ASTRA-Sim step latencies based on native A30 kernel profiles.</aside>
     </section>
   </div>

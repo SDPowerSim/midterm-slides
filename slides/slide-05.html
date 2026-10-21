@@ -6,42 +6,107 @@
   <title>SpecWatt · A30 Time per Token</title>
   <link rel="stylesheet" href="theme.css">
   <style>
-    .time-layout { --left: 1.66fr; --right: .94fr; --gap: 46px; }
+    .time-page { display: grid; grid-template-rows: auto minmax(0, 1fr); gap: 18px; height: 100%; }
+    .formula-band { display: grid; grid-template-columns: 1.05fr 1fr; gap: 40px; align-items: center; padding-bottom: 16px; border-bottom: 2px solid var(--line); }
+    .time-equation { display: flex; align-items: center; gap: 14px; color: var(--navy); font-size: 23px; line-height: 1.3; }
+    .time-equation strong { color: var(--blue); white-space: nowrap; }
+    .time-fraction { display: inline-flex; flex-direction: column; text-align: center; }
+    .time-numerator { padding: 0 6px 7px; border-bottom: 2px solid var(--navy); white-space: nowrap; }
+    .time-denominator { padding-top: 6px; }
+    .formula-definitions { margin: 0; color: var(--body); font-size: 17px; line-height: 1.5; }
+    .formula-definitions strong { color: var(--blue); }
+    .time-layout { position: relative; --left: 1.66fr; --right: .94fr; --gap: 46px; }
+    .acceptance-annotation { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; color: #b7787d; opacity: 0; transition: opacity 240ms ease 1000ms; }
+    body.is-active .acceptance-annotation { opacity: 1; }
     .chart-wrap { margin: 0; width: 100%; }
-    .chart-wrap figcaption { margin: 1px 0 0 76px; color: var(--muted); font-size: 15px; }
+    .chart-wrap figcaption { margin: 8px 28px 0 76px; color: var(--body); font-size: 16px; line-height: 1.4; text-align: center; }
     .break-even { margin: 10px 0 7px; color: var(--blue); font-size: 72px; font-weight: 820; line-height: 1; letter-spacing: -.05em; }
-    .full-accept { margin: 22px 0 0; padding-top: 18px; border-top: 1px solid var(--line); color: var(--body); font-size: 20px; line-height: 1.48; }
+    .acceptance-label { margin: 0 0 14px; color: var(--blue); font-size: 20px; font-weight: 750; line-height: 1.3; }
+    .time-layout .body-copy { font-size: 22px; line-height: 1.4; }
+    .full-accept { margin: 18px 0 0; padding-top: 14px; border-top: 1px solid var(--line); color: var(--body); font-size: 19px; line-height: 1.35; }
     .full-accept strong { color: var(--navy); }
-    .sweep-note { margin: 20px 0 0; color: var(--muted); font-size: 16px; line-height: 1.38; }
+    .time-layout .takeaway { margin-top: 20px; padding-top: 17px; border-top: 1px solid var(--line); font-size: 26px; line-height: 1.3; }
+    .slide-footer { justify-content: flex-end; }
   </style>
 </head>
 <body>
   <div class="stage">
     <section class="slide">
-      <div class="kicker reveal">03 / Evaluation · A30 Time per Generated Token</div>
+      <div class="kicker reveal">03 / Evaluation · Latency &amp; Acceptance</div>
       <h1 class="slide-title reveal" style="--delay:70ms">All Tested k Values Break Even at 50% Acceptance</h1>
       <main class="slide-content">
+        <div class="time-page">
+          <div class="formula-band reveal" style="--delay:100ms">
+            <div class="time-equation" role="math" aria-label="Time per token equals k times draft step time plus target step time at q equals k plus one, divided by a plus one">
+              <strong>Time per token =</strong>
+              <span class="time-fraction"><span class="time-numerator">k × T<sub>draft</sub> + T<sub>target</sub>(q = k + 1)</span><span class="time-denominator">a + 1</span></span>
+            </div>
+            <p class="formula-definitions">T<sub>draft</sub>, T<sub>target</sub>: simulated step latencies from slide 4<br>k: drafted tokens · a: assumed accepted draft tokens per round<br><strong>Acceptance rate = a / k</strong></p>
+          </div>
         <div class="two-column time-layout">
           <figure class="chart-wrap reveal" style="--delay:120ms">
             <div data-line-chart>
-              <script type="application/json">{"width":920,"height":505,"xMin":0,"xMax":1,"yMin":0,"yMax":52,"xLabel":"Acceptance rate","yLabel":"Simulated time (ms/token)","xTicks":[{"value":0,"label":"0%"},{"value":0.25,"label":"25%"},{"value":0.5,"label":"50%"},{"value":0.75,"label":"75%"},{"value":1,"label":"100%"}],"yTicks":[0,10,20,30,40,50],"baseline":{"value":10.654134,"label":"Target baseline 10.65"},"series":[{"name":"k = 2","values":[[0,20.25423],[0.5,10.127115],[1,6.75141]]},{"name":"k = 4","values":[[0,29.520383],[0.25,14.760192],[0.5,9.840128],[0.75,7.380096],[1,5.904077]]},{"name":"k = 8","values":[[0,48.220007],[0.125,24.110004],[0.25,16.073336],[0.375,12.055002],[0.5,9.644001],[0.625,8.036668],[0.75,6.888572],[0.875,6.027501],[1,5.357779]]}],"ariaLabel":"A30 simulated time per generated token against acceptance rate"}</script>
+              <script type="application/json">{"width":920,"height":505,"xMin":0,"xMax":1,"yMin":0,"yMax":52,"xLabel":"Acceptance rate","yLabel":"Simulated latency (ms/token)","xTicks":[{"value":0,"label":"0%"},{"value":0.25,"label":"25%"},{"value":0.5,"label":"50%"},{"value":0.75,"label":"75%"},{"value":1,"label":"100%"}],"yTicks":[0,10,20,30,40,50],"baseline":{"value":10.654134,"label":"Target baseline 10.65"},"series":[{"name":"k = 2","values":[[0,20.25423],[0.5,10.127115],[1,6.75141]]},{"name":"k = 4","values":[[0,29.520383],[0.25,14.760192],[0.5,9.840128],[0.75,7.380096],[1,5.904077]]},{"name":"k = 8","values":[[0,48.220007],[0.125,24.110004],[0.25,16.073336],[0.375,12.055002],[0.5,9.644001],[0.625,8.036668],[0.75,6.888572],[0.875,6.027501],[1,5.357779]]}],"ariaLabel":"A30 simulated latency per generated token against acceptance rate"}</script>
             </div>
-            <figcaption>Fixed accepted-token counts within each speculative round.</figcaption>
+            <figcaption>Estimated latency per token versus acceptance rate for k = 2, 4, and 8.</figcaption>
           </figure>
           <aside class="summary reveal" style="--delay:330ms">
-            <p class="eyebrow">First tested winning point</p>
+            <p class="eyebrow">Experimental Findings</p>
             <p class="break-even">50%</p>
-            <p class="body-copy">Accepted counts are 1 of 2, 2 of 4, and 4 of 8. Every curve falls below the target-only baseline.</p>
+            <p class="acceptance-label">acceptance</p>
+            <p class="body-copy">At 50% acceptance, k = 2, 4, and 8 all have lower modeled time per token than target-only decoding.</p>
             <p class="full-accept"><strong>At full acceptance</strong><br>k = 2: 6.75 ms/token<br>k = 4: 5.90 ms/token<br>k = 8: 5.36 ms/token</p>
-            <p class="sweep-note">These points use fixed acceptance counts. SDController traces will replace the sweep after full operator pricing works.</p>
+            <p class="takeaway">Our preliminary results so far show that <strong>speculative decoding can reduce latency.</strong></p>
           </aside>
+          <svg class="acceptance-annotation" aria-hidden="true">
+            <defs><marker id="acceptance-arrowhead" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M1 1L9 5L1 9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="none" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+            <circle class="acceptance-circle" r="21" fill="none" stroke="currentColor" stroke-width="2.5"/>
+            <path class="acceptance-link" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#acceptance-arrowhead)"/>
+          </svg>
+        </div>
         </div>
       </main>
-      <footer class="slide-footer"><span class="source">A30 profile-driven simulation · Fixed acceptance sweep</span><span class="number">5</span></footer>
-      <aside hidden aria-label="Presenter notes">Shurui, about 65 seconds. The first tested point below the target baseline is 50 percent acceptance for all three k values. At full acceptance, larger k produces lower modeled time per token. Hand off to Muyun for the energy model and its current coverage boundary.</aside>
+      <footer class="slide-footer"><span class="number">5</span></footer>
+      <aside hidden aria-label="Presenter notes">Shurui, about 65 seconds. Begin with the formula: each round costs k draft steps plus one target forward at q equals k plus one, and produces a accepted draft tokens plus one target token. The step latencies come from slide four; a is an assumed fixed count, and the plotted acceptance rate is a divided by k. The first tested point below the target baseline is 50 percent acceptance for all three k values. At full acceptance, larger k produces lower modeled time per token. Hand off to Muyun for the energy model and its current coverage boundary.</aside>
     </section>
   </div>
   <script src="../scripts/chart.js"></script>
+  <script>
+    (function () {
+      const layout = document.querySelector('.time-layout');
+      const annotation = document.querySelector('.acceptance-annotation');
+      function position(element) {
+        let x = 0, y = 0;
+        for (let current = element; current && current !== layout; current = current.offsetParent) {
+          x += current.offsetLeft;
+          y += current.offsetTop;
+        }
+        return { x, y };
+      }
+      function drawAnnotation() {
+        const chart = document.querySelector('[data-line-chart]');
+        const svg = chart.querySelector('.native-chart');
+        const axis = svg.querySelectorAll('.chart-axis')[1];
+        const midpoint = (Number(axis.getAttribute('x1')) + Number(axis.getAttribute('x2'))) / 2;
+        const markers = Array.from(svg.querySelectorAll('.chart-marker')).filter(marker => Math.abs(Number(marker.getAttribute('cx')) - midpoint) < 0.01);
+        const scale = chart.clientWidth / svg.viewBox.baseVal.width;
+        const origin = position(chart);
+        const x = origin.x + midpoint * scale;
+        const y = origin.y + markers.reduce((sum, marker) => sum + Number(marker.getAttribute('cy')), 0) / markers.length * scale;
+        const label = document.querySelector('.break-even');
+        const end = position(label);
+        end.x -= 10;
+        end.y += label.clientHeight / 2;
+        annotation.setAttribute('viewBox', `0 0 ${layout.clientWidth} ${layout.clientHeight}`);
+        annotation.querySelector('.acceptance-circle').setAttribute('cx', x);
+        annotation.querySelector('.acceptance-circle').setAttribute('cy', y);
+        annotation.querySelector('.acceptance-link').setAttribute('d', `M${x + 21} ${y} C${x + 190} ${y},${end.x - 110} ${end.y},${end.x} ${end.y}`);
+      }
+      window.addEventListener('resize', drawAnnotation);
+      window.addEventListener('slideactive', drawAnnotation);
+      drawAnnotation();
+    })();
+  </script>
   <script src="../scripts/slide-runtime.js"></script>
 </body>
 </html>
