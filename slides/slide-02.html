@@ -6,7 +6,8 @@
   <title>SpecWatt · Context and Evaluation Plan</title>
   <link rel="stylesheet" href="theme.css">
   <style>
-    .context-grid { display: grid; grid-template-rows: 330px 1fr; gap: 22px; height: 100%; }
+    .slide-content { bottom: 104px; }
+    .context-grid { display: grid; grid-template-rows: 350px 1fr auto; gap: 18px; height: 100%; }
     .question-row { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, .82fr); gap: 44px; align-items: center; }
     .decode-figure { margin: 0; padding: 8px 0 0; }
     .decode-row { display: grid; grid-template-columns: 168px 1fr; gap: 18px; align-items: center; margin-bottom: 28px; }
@@ -24,8 +25,16 @@
     .question-block { padding-left: 34px; border-left: 2px solid var(--line); }
     .question { margin: 8px 0 14px; color: var(--navy); font-size: 31px; font-weight: 780; line-height: 1.27; }
     .question-block .body-copy { font-size: 21px; line-height: 1.38; }
-    .equation { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); color: var(--body); font-size: 19px; line-height: 1.35; }
-    .equation strong { color: var(--blue); }
+    .equation { display: flex; align-items: center; gap: 10px; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); color: var(--body); font-size: 17px; line-height: 1.35; }
+    .equation strong { color: var(--blue); white-space: nowrap; }
+    .equation-reference { position: relative; top: -.5em; margin-left: 2px; color: var(--blue); font-size: 11px; line-height: 1; text-decoration: none; }
+    .fraction { display: inline-flex; flex-direction: column; text-align: center; }
+    .numerator { padding: 0 4px 6px; border-bottom: 2px solid var(--body); white-space: nowrap; }
+    .denominator { padding-top: 6px; }
+    .scope-note { margin: 0; padding-top: 12px; border-top: 2px solid var(--line); color: var(--blue); font-size: 19px; font-weight: 750; line-height: 1.4; }
+    .slide-footer { align-items: flex-end; gap: 28px; }
+    .slide-footer .source { max-width: 1320px; font-size: 14px; line-height: 1.45; }
+    .slide-footer a { color: inherit; text-decoration: none; }
     .pipeline { position: relative; display: grid; grid-template-columns: repeat(5, 1fr); gap: 22px; padding-top: 22px; border-top: 2px solid var(--line); }
     .pipeline-step { position: relative; padding: 18px 17px 14px; border-top: 4px solid var(--line); background: #fff; }
     .pipeline-step .index { display: block; margin-bottom: 9px; color: var(--blue); font-size: 15px; font-weight: 820; letter-spacing: .08em; }
@@ -70,7 +79,10 @@
               <p class="eyebrow">The trade-off</p>
               <p class="question">Draft work adds cost. One verification forward can replace several target calls.</p>
               <p class="body-copy">Savings depend on kernel cost and the number of accepted draft tokens.</p>
-              <div class="equation"><strong>Cost per token</strong><br>(k × draft + verification) / (accepted + 1)</div>
+              <div class="equation" role="math" aria-label="Cost per token equals k times draft cost plus verification cost, divided by accepted draft tokens plus one">
+                <strong>Cost per token<a class="equation-reference" href="#reference-1" aria-label="Reference 1">[1]</a> =</strong>
+                <span class="fraction"><span class="numerator">k × draft cost + verification cost</span><span class="denominator">accepted draft tokens + 1</span></span>
+              </div>
             </aside>
           </div>
           <div class="pipeline reveal" style="--delay:380ms" aria-label="SpecWatt evaluation plan">
@@ -80,9 +92,10 @@
             <section class="pipeline-step" style="--step:3"><span class="index">04</span><h2>Price operators</h2><p>A30 timing and A100 energy models</p></section>
             <section class="pipeline-step" style="--step:4"><span class="index">05</span><h2>Compute per token</h2><p>Acceptance sweeps and break-even points</p></section>
           </div>
+          <div class="scope-note reveal" style="--delay:480ms">Current midterm scope: 1) Formula-based acceptance sweeps; 2) Reproducible, versioned artifacts.</div>
         </div>
       </main>
-      <footer class="slide-footer"><span>Current midterm scope: fixed acceptance sweeps with versioned artifacts</span><span class="number">2</span></footer>
+      <footer class="slide-footer"><span class="source" id="reference-1">[1] Yaniv Leviathan, Matan Kalman, and Yossi Matias. 2023. Fast Inference from Transformers via Speculative Decoding. In <em>Proceedings of the 40th International Conference on Machine Learning (ICML ’23)</em>, Vol. 202. PMLR, 19274–19286. <a href="https://proceedings.mlr.press/v202/leviathan23a.html">https://proceedings.mlr.press/v202/leviathan23a.html</a></span><span class="number">2</span></footer>
       <aside hidden aria-label="Presenter notes">Jinglin, about 75 seconds. Establish the context, compare target-only decoding with one speculative round, and walk through the five-stage evaluation plan. Hand off to Shurui for kernel construction and validation.</aside>
     </section>
   </div>
