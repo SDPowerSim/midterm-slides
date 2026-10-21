@@ -3,57 +3,90 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>SpecWatt · Evaluation Pipeline</title>
+  <title>SpecWatt · Kernel Workloads and Validation</title>
   <link rel="stylesheet" href="theme.css">
   <style>
-    .pipeline { position: relative; height: 338px; margin-top: 42px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 28px; align-items: center; }
-    .pipeline-track { position: absolute; left: 90px; right: 90px; top: 167px; height: 3px; background: var(--line); }
-    .pipeline-signal { position: absolute; left: 78px; top: 155px; width: 27px; height: 27px; border: 5px solid #fff; border-radius: 50%; background: var(--blue); box-shadow: 0 0 0 2px var(--blue); opacity: 0; }
-    body.is-active .pipeline-signal { animation: signal-run 6.4s .65s ease-in-out infinite; }
-    @keyframes signal-run {
-      0% { left: 78px; opacity: 0; }
-      5%, 17% { left: 78px; opacity: 1; }
-      24%, 36% { left: 381px; opacity: 1; }
-      43%, 55% { left: 684px; opacity: 1; }
-      62%, 74% { left: 987px; opacity: 1; }
-      81%, 95% { left: 1290px; opacity: 1; }
-      100% { left: 1290px; opacity: 0; }
-    }
-    .pipeline-step { position: relative; z-index: 2; min-height: 206px; padding: 30px 23px 26px; background: #fff; border-top: 4px solid var(--line); text-align: left; }
-    .pipeline-step .index { display: block; margin-bottom: 22px; color: var(--blue); font-size: 18px; font-weight: 820; letter-spacing: .08em; }
-    .pipeline-step h2 { margin: 0 0 10px; color: var(--navy); font-size: 25px; font-weight: 770; line-height: 1.24; }
-    .pipeline-step p { margin: 0; color: var(--body); font-size: 19px; line-height: 1.42; }
-    body.is-active .pipeline-step { animation: step-focus 6.4s .65s ease-in-out infinite; animation-delay: calc(.65s + var(--step) * 1.22s); }
-    @keyframes step-focus { 0%, 19%, 100% { border-top-color: var(--line); background: #fff; transform: translateY(0); } 5%, 14% { border-top-color: var(--blue); background: #f5f9fd; transform: translateY(-8px); } }
-    .pipeline-note { display: grid; grid-template-columns: 1fr 1fr; gap: 45px; margin-top: 36px; padding-top: 26px; border-top: 1px solid var(--line); }
-    .pipeline-note p { margin: 0; color: var(--body); font-size: 22px; line-height: 1.4; }
-    .pipeline-note strong { color: var(--navy); }
-    .next-path { color: var(--muted) !important; }
+    .kernel-layout { display: grid; grid-template-rows: 395px 1fr; gap: 20px; height: 100%; }
+    .geometry { display: grid; grid-template-columns: 1fr 1fr 1.08fr; gap: 32px; align-items: stretch; }
+    .lane { padding: 19px 22px 15px; border-top: 5px solid var(--blue); background: #fff; }
+    .lane.draft { border-color: var(--green); }
+    .lane.verify { border-color: var(--orange); }
+    .lane h2 { margin: 0 0 5px; color: var(--navy); font-size: 25px; font-weight: 780; }
+    .lane .model { margin: 0 0 15px; color: var(--body); font-size: 18px; }
+    .lane dl { margin: 0; display: grid; grid-template-columns: 120px 1fr; column-gap: 14px; row-gap: 8px; font-size: 17px; line-height: 1.23; }
+    .lane dt { color: var(--muted); }
+    .lane dd { margin: 0; color: var(--ink); font-weight: 690; }
+    .shape-strip { margin-top: 15px; padding-top: 12px; border-top: 1px solid var(--line); }
+    .shape-strip span { display: block; margin-bottom: 5px; color: var(--muted); font-size: 13px; font-weight: 760; letter-spacing: .07em; text-transform: uppercase; }
+    .shape-strip code { color: var(--navy); font-size: 16px; line-height: 1.35; white-space: normal; }
+    .validation { display: grid; grid-template-columns: 1.12fr 1fr 1fr 1fr; gap: 24px; padding-top: 17px; border-top: 2px solid var(--line); }
+    .validation-item { padding: 12px 14px 0; border-top: 3px solid var(--blue); }
+    .validation-item:nth-child(2) { border-color: var(--green); }
+    .validation-item:nth-child(3) { border-color: var(--orange); }
+    .validation-item:nth-child(4) { border-color: #8799aa; }
+    .validation-number { display: block; color: var(--navy); font-size: 43px; font-weight: 820; line-height: 1; letter-spacing: -.04em; }
+    .validation-item h3 { margin: 9px 0 4px; color: var(--navy); font-size: 18px; font-weight: 760; line-height: 1.2; }
+    .validation-item p { margin: 0; color: var(--body); font-size: 14px; line-height: 1.3; }
+    .validation-note { grid-column: 1 / -1; margin: -2px 0 0; color: var(--muted); font-size: 14px; text-align: right; }
+    .validation-note strong { color: var(--green); }
   </style>
 </head>
 <body>
   <div class="stage">
     <section class="slide">
-      <div class="kicker reveal">02 / Method · Reproducible Evidence Chain</div>
-      <h1 class="slide-title reveal" style="--delay:70ms">The Current Midterm Pipeline</h1>
+      <div class="kicker reveal">02 / Method · Frozen Workloads and Runtime Evidence</div>
+      <h1 class="slide-title reveal" style="--delay:70ms">Kernel Workloads and Validation</h1>
       <main class="slide-content">
-        <div class="pipeline reveal" style="--delay:140ms">
-          <div class="pipeline-track"></div><div class="pipeline-signal"></div>
-          <section class="pipeline-step" style="--step:0"><span class="index">01</span><h2>Freeze the workload</h2><p>1B draft, 3B target, context 512, k = 2, 4, 8</p></section>
-          <section class="pipeline-step" style="--step:1"><span class="index">02</span><h2>Export shapes</h2><p>Canonical GEMM and attention geometry for every layer</p></section>
-          <section class="pipeline-step" style="--step:2"><span class="index">03</span><h2>Validate</h2><p>Structural checks and PyTorch profiler comparisons</p></section>
-          <section class="pipeline-step" style="--step:3"><span class="index">04</span><h2>Price operators</h2><p>A30 simulation and A100 EnergAIzer estimates</p></section>
-          <section class="pipeline-step" style="--step:4"><span class="index">05</span><h2>Compute per token</h2><p>Fixed acceptance sweeps and break-even rates</p></section>
-        </div>
-        <div class="pipeline-note reveal" style="--delay:320ms">
-          <p><strong>Current evidence:</strong> deterministic inputs, checked shapes, versioned artifacts, and reproducible result tables.</p>
-          <p class="next-path"><strong>Next integration:</strong> SDController traces will replace fixed acceptance rates after full operator pricing works.</p>
+        <div class="kernel-layout">
+          <div class="geometry">
+            <section class="lane draft reveal" style="--delay:120ms">
+              <h2>Draft decode</h2><p class="model">Llama-3.2-1B · q = 1</p>
+              <dl><dt>Layers</dt><dd>16</dd><dt>Hidden width</dt><dd>2,048</dd><dt>GQA</dt><dd>32 query / 8 KV</dd><dt>Head size</dt><dd>64</dd><dt>KV after</dt><dd>513</dd></dl>
+              <div class="shape-strip"><span>Example GEMM</span><code>Q projection (1, 2048, 2048)</code></div>
+            </section>
+            <section class="lane reveal" style="--delay:210ms">
+              <h2>Target decode</h2><p class="model">Llama-3.2-3B · q = 1</p>
+              <dl><dt>Layers</dt><dd>28</dd><dt>Hidden width</dt><dd>3,072</dd><dt>GQA</dt><dd>24 query / 8 KV</dd><dt>Head size</dt><dd>128</dd><dt>KV after</dt><dd>513</dd></dl>
+              <div class="shape-strip"><span>Example GEMM</span><code>Q projection (1, 3072, 3072)</code></div>
+            </section>
+            <section class="lane verify reveal" style="--delay:300ms">
+              <h2>Target verification</h2><p class="model">Llama-3.2-3B · q = k + 1</p>
+              <dl><dt>Query lengths</dt><dd>3, 5, 9</dd><dt>Hidden width</dt><dd>3,072</dd><dt>GQA</dt><dd>24 query / 8 KV</dd><dt>Head size</dt><dd>128</dd><dt>KV after</dt><dd>512 + q</dd></dl>
+              <div class="shape-strip"><span>Attention geometry</span><code>(q, 512 + q, 24, 8, 128)</code></div>
+            </section>
+          </div>
+          <div class="validation" aria-label="Validation summary">
+            <section class="validation-item reveal" style="--delay:360ms"><span class="validation-number" data-count="1812">0</span><h3>Operator records</h3><p>Five canonical scenarios across all layers</p></section>
+            <section class="validation-item reveal" style="--delay:420ms"><span class="validation-number" data-count="382">0</span><h3>Structural checks</h3><p>Membership, counts, and dimensions</p></section>
+            <section class="validation-item reveal" style="--delay:480ms"><span class="validation-number" data-count="450">0</span><h3>PyTorch comparisons</h3><p>Target q = 1 and q = 5 traces</p></section>
+            <section class="validation-item reveal" style="--delay:540ms"><span class="validation-number" data-count="445">0</span><h3>Hashed artifacts</h3><p>Commands, versions, logs, and outputs</p></section>
+            <p class="validation-note reveal" style="--delay:610ms"><strong>0 failures.</strong> A30 kernel profiles and simulator scenarios cover q = 1, 3, 5, and 9; eager PyTorch shape traces cover q = 1 and 5.</p>
+          </div>
         </div>
       </main>
-      <footer class="slide-footer"><span>Animated sequence replays when the slide opens</span><span class="number">3</span></footer>
-      <aside hidden aria-label="Presenter notes">Walk through the five stages. Emphasize that the current midterm result deliberately uses fixed acceptance rates. Real controller acceptance belongs to the next phase.</aside>
+      <footer class="slide-footer"><span>Batch 1 · BF16 · context 512 · TP = 1 · k ∈ {2, 4, 8}</span><span class="number">3</span></footer>
+      <aside hidden aria-label="Presenter notes">Shurui, about 75 seconds. Explain the three execution types and the q equals k plus one relationship. State the validation boundary precisely: eager PyTorch comparisons cover q equals one and five, while the A30 kernel profile and simulator cover q equals one, three, five, and nine.</aside>
     </section>
   </div>
+  <script>
+    (function () {
+      let frame = null;
+      function run() {
+        cancelAnimationFrame(frame);
+        const start = performance.now();
+        const duration = 700;
+        const items = Array.from(document.querySelectorAll('[data-count]'));
+        function update(now) {
+          const progress = Math.min(1, (now - start) / duration);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          items.forEach(function (item) { item.textContent = Math.round(Number(item.dataset.count) * eased).toLocaleString(); });
+          if (progress < 1) frame = requestAnimationFrame(update);
+        }
+        frame = requestAnimationFrame(update);
+      }
+      window.addEventListener('slideactive', run);
+    })();
+  </script>
   <script src="../scripts/slide-runtime.js"></script>
 </body>
 </html>

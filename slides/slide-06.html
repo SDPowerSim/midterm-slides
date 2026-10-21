@@ -3,61 +3,87 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>SpecWatt · A30 Step Latency</title>
+  <title>SpecWatt · Supported GEMM Energy</title>
   <link rel="stylesheet" href="theme.css">
   <style>
-    .latency-layout { --left: 1.55fr; --right: 1fr; }
-    .bar-chart { position: relative; height: 500px; padding: 24px 20px 58px 80px; }
-    .bar-grid { position: absolute; left: 80px; right: 20px; top: 24px; bottom: 58px; display: flex; flex-direction: column; justify-content: space-between; }
-    .bar-grid span { position: relative; width: 100%; height: 0; border-top: 1px solid #dce5ed; }
-    .bar-grid span::before { content: attr(data-value); position: absolute; right: calc(100% + 14px); top: -11px; color: var(--muted); font-size: 17px; }
-    .bar-axis-label { position: absolute; left: 14px; top: 176px; writing-mode: vertical-rl; transform: rotate(180deg); color: var(--navy); font-size: 19px; font-weight: 720; }
-    .bars { position: absolute; left: 101px; right: 36px; top: 24px; bottom: 58px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 24px; align-items: end; }
-    .bar-group { height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; }
-    .bar-value { margin-bottom: 10px; color: var(--navy); font-size: 21px; font-weight: 780; opacity: 0; transition: opacity 240ms ease 720ms; }
-    .bar { width: 78%; height: var(--height); min-height: 8px; background: var(--color); border-radius: 4px 4px 0 0; transform: scaleY(0); transform-origin: bottom; }
-    .bar-label { position: absolute; top: calc(100% + 12px); width: 130px; color: var(--body); font-size: 17px; font-weight: 680; line-height: 1.2; text-align: center; }
-    body.is-active .bar { animation: grow-bar 700ms cubic-bezier(.2,.8,.2,1) forwards; animation-delay: var(--delay); }
-    body.is-active .bar-value { opacity: 1; }
-    @keyframes grow-bar { to { transform: scaleY(1); } }
-    .latency-summary .metric { margin-top: 13px; }
-    .latency-summary .context { margin: 3px 0 25px; color: var(--muted); font-size: 19px; }
-    .compare { margin: 0; color: var(--body); font-size: 23px; line-height: 1.46; }
-    .compare strong { color: var(--navy); }
+    .energy-layout { display: grid; grid-template-columns: 470px 1fr; gap: 44px; height: 100%; align-items: start; }
+    .coverage { padding-right: 32px; border-right: 2px solid var(--line); }
+    .coverage-total { margin: 7px 0 13px; color: var(--navy); font-size: 58px; font-weight: 820; line-height: 1; letter-spacing: -.05em; }
+    .coverage-total span { color: var(--body); font-size: 20px; font-weight: 700; letter-spacing: 0; }
+    .coverage-bar { display: flex; width: 100%; height: 48px; overflow: hidden; border-radius: 4px; background: #edf2f6; }
+    .coverage-segment { height: 100%; transform: scaleX(0); transform-origin: left; }
+    .coverage-segment.gemm { width: 49.7%; background: var(--blue); }
+    .coverage-segment.attn { width: 7.1%; background: var(--orange); }
+    .coverage-segment.other { width: 43.2%; background: #b7c3ce; }
+    body.is-active .coverage-segment { animation: fill-segment 650ms ease forwards; animation-delay: var(--delay); }
+    @keyframes fill-segment { to { transform: scaleX(1); } }
+    .coverage-row { display: grid; grid-template-columns: 14px 1fr auto; gap: 10px; align-items: center; margin-top: 11px; color: var(--body); font-size: 16px; }
+    .coverage-row i { width: 11px; height: 11px; border-radius: 2px; background: var(--color); }
+    .coverage-row strong { color: var(--navy); }
+    .coverage-note { margin: 13px 0 0; color: var(--muted); font-size: 14px; line-height: 1.34; }
+    .step-title { margin: 20px 0 6px; padding-top: 15px; border-top: 1px solid var(--line); color: var(--navy); font-size: 19px; font-weight: 770; }
+    .step-energy { width: 100%; border-collapse: collapse; color: var(--body); font-size: 15px; }
+    .step-energy td { padding: 6px 0; border-bottom: 1px solid #e6edf3; }
+    .step-energy td:first-child { color: var(--ink); }
+    .step-energy td:last-child { color: var(--navy); font-weight: 750; text-align: right; }
+    .energy-chart { margin: 0; }
+    .energy-chart h2 { margin: 0 0 0; color: var(--navy); font-size: 25px; font-weight: 770; }
+    .energy-chart figcaption { margin: -5px 0 0 72px; color: var(--muted); font-size: 14px; }
+    .break-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; margin-top: 13px; border-top: 2px solid var(--line); border-bottom: 2px solid var(--line); }
+    .break-row div { padding: 10px 12px; color: var(--body); font-size: 15px; text-align: center; }
+    .break-row strong { display: block; margin-bottom: 2px; color: var(--blue); font-size: 23px; }
+    .caveat { margin: 11px 0 0; color: var(--muted); font-size: 14px; line-height: 1.35; text-align: center; }
   </style>
 </head>
 <body>
   <div class="stage">
     <section class="slide">
-      <div class="kicker reveal">03 / Evaluation · A30 Simulation</div>
-      <h1 class="slide-title reveal" style="--delay:70ms">Verification Costs About One Target Decode</h1>
+      <div class="kicker reveal">03 / Evaluation · EnergAIzer A100 Model</div>
+      <h1 class="slide-title reveal" style="--delay:70ms">GEMM Energy Savings Require High Acceptance</h1>
       <main class="slide-content">
-        <div class="two-column latency-layout">
-          <figure class="bar-chart reveal" style="--delay:120ms" aria-label="A30 step latency bar chart">
-            <div class="bar-grid"><span data-value="12"></span><span data-value="10"></span><span data-value="8"></span><span data-value="6"></span><span data-value="4"></span><span data-value="2"></span><span data-value="0"></span></div>
-            <div class="bar-axis-label">Latency (ms)</div>
-            <div class="bars">
-              <div class="bar-group"><div class="bar-value">4.62</div><div class="bar" style="--height:161px;--color:var(--blue-bright);--delay:180ms"></div><div class="bar-label">Draft<br>q = 1</div></div>
-              <div class="bar-group"><div class="bar-value">10.65</div><div class="bar" style="--height:371px;--color:#4d5c6b;--delay:280ms"></div><div class="bar-label">Target<br>q = 1</div></div>
-              <div class="bar-group"><div class="bar-value">11.01</div><div class="bar" style="--height:384px;--color:var(--orange);--delay:380ms"></div><div class="bar-label">Verify<br>q = 3</div></div>
-              <div class="bar-group"><div class="bar-value">11.03</div><div class="bar" style="--height:385px;--color:var(--orange);--delay:480ms"></div><div class="bar-label">Verify<br>q = 5</div></div>
-              <div class="bar-group"><div class="bar-value">11.23</div><div class="bar" style="--height:392px;--color:var(--orange);--delay:580ms"></div><div class="bar-label">Verify<br>q = 9</div></div>
+        <div class="energy-layout">
+          <section class="coverage reveal" style="--delay:120ms">
+            <p class="eyebrow">Current pricing coverage</p>
+            <p class="coverage-total">901 <span>of 1,812 records</span></p>
+            <div class="coverage-bar" aria-label="Operator record coverage"><span class="coverage-segment gemm" style="--delay:180ms"></span><span class="coverage-segment attn" style="--delay:470ms"></span><span class="coverage-segment other" style="--delay:590ms"></span></div>
+            <div class="coverage-row" style="--color:var(--blue)"><i></i><span>GEMM priced</span><strong>901</strong></div>
+            <div class="coverage-row" style="--color:var(--orange)"><i></i><span>Asymmetric FlashAttention rejected</span><strong>128</strong></div>
+            <div class="coverage-row" style="--color:#b7c3ce"><i></i><span>Other operators excluded</span><strong>783</strong></div>
+            <p class="coverage-note">49.7% is row coverage, not a physical-energy coverage percentage.</p>
+            <h2 class="step-title">Supported-kernel step energy</h2>
+            <table class="step-energy" aria-label="Supported kernel step energy estimates">
+              <tbody>
+                <tr><td>Draft q = 1</td><td>0.4909 J</td></tr>
+                <tr><td>Target q = 1</td><td>0.9991 J</td></tr>
+                <tr><td>Verify q = 3</td><td>1.7833 J</td></tr>
+                <tr><td>Verify q = 5</td><td>1.7865 J</td></tr>
+                <tr><td>Verify q = 9</td><td>1.2963 J*</td></tr>
+              </tbody>
+            </table>
+            <p class="coverage-note">* q = 9 inherits a reproduced non-monotonic GEMM prediction. Fifteen sanity checks pass and two monotonicity checks fail.</p>
+          </section>
+          <section class="reveal" style="--delay:260ms">
+            <figure class="energy-chart">
+              <h2>Energy per generated token</h2>
+              <div data-line-chart>
+                <script type="application/json">{"width":870,"height":425,"xMin":0,"xMax":1,"yMin":0.4,"yMax":5.5,"xLabel":"Acceptance rate","yLabel":"Energy (J/token)","xTicks":[{"value":0,"label":"0%"},{"value":0.25,"label":"25%"},{"value":0.5,"label":"50%"},{"value":0.75,"label":"75%"},{"value":1,"label":"100%"}],"yTicks":[1,2,3,4,5],"baseline":{"value":0.999102,"label":"Target 1.00"},"series":[{"name":"k = 2","values":[[0,2.765061],[0.5,1.382531],[1,0.921687]]},{"name":"k = 4","values":[[0,3.750044],[0.25,1.875022],[0.5,1.250015],[0.75,0.937511],[1,0.750009]]},{"name":"k = 8","values":[[0,5.223328],[0.125,2.611664],[0.25,1.741109],[0.375,1.305832],[0.5,1.044666],[0.625,0.870555],[0.75,0.74619],[0.875,0.652916],[1,0.58037]]}],"ariaLabel":"Supported GEMM energy per token against acceptance rate"}</script>
+              </div>
+              <figcaption>Attention, norms, RoPE, activations, residuals, and sampling are excluded.</figcaption>
+            </figure>
+            <div class="break-row">
+              <div><strong>k = 2</strong>First win at 100%</div>
+              <div><strong>k = 4</strong>First win at 75%</div>
+              <div><strong>k = 8</strong>First win at 62.5%*</div>
             </div>
-          </figure>
-          <aside class="summary latency-summary reveal" style="--delay:330ms">
-            <p class="eyebrow">Measured relationship</p>
-            <p class="metric">1.03× <span class="metric-unit">to 1.05×</span></p>
-            <p class="context">verification / target decode latency</p>
-            <p class="compare">A single q = 3, 5, or 9 verification forward costs only slightly more than a q = 1 target decode.</p>
-            <hr class="rule">
-            <p class="takeaway">Verification is far cheaper than <strong>q serial target calls.</strong></p>
-          </aside>
+            <p class="caveat">These thresholds diagnose the supported GEMM subset. They are not full-GPU energy break-even points.</p>
+          </section>
         </div>
       </main>
-      <footer class="slide-footer"><span class="source">LLMServingSim 2.0 / ASTRA-Sim · NVIDIA A30 profile-driven simulation</span><span class="number">6</span></footer>
-      <aside hidden aria-label="Presenter notes">Read the bars from draft to q equals nine. The near-flat verification cost is the amortization behavior speculative decoding needs.</aside>
+      <footer class="slide-footer"><span class="source">EnergAIzer A100 model · 900 MHz · supported-kernel-only totals</span><span class="number">6</span></footer>
+      <aside hidden aria-label="Presenter notes">Muyun, about 95 seconds. Begin with the coverage boundary, then show the supported-kernel step estimates and acceptance sweep. Keep the caveat attached to the result: attention and other operators are excluded, and q equals nine contains a documented non-monotonic GEMM prediction.</aside>
     </section>
   </div>
+  <script src="../scripts/chart.js"></script>
   <script src="../scripts/slide-runtime.js"></script>
 </body>
 </html>

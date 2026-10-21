@@ -3,56 +3,60 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>SpecWatt · Kernel Geometry</title>
+  <title>SpecWatt · A30 Step Latency</title>
   <link rel="stylesheet" href="theme.css">
   <style>
-    .geometry { display: grid; grid-template-columns: 1fr 1fr 1.08fr; gap: 42px; height: 100%; align-items: stretch; }
-    .lane { position: relative; padding: 25px 27px 20px; border-top: 5px solid var(--blue); }
-    .lane.draft { border-color: var(--green); }
-    .lane.verify { border-color: var(--orange); }
-    .lane h2 { margin: 0 0 8px; color: var(--navy); font-size: 29px; font-weight: 780; }
-    .lane .model { margin: 0 0 25px; color: var(--body); font-size: 21px; }
-    .lane dl { margin: 0; display: grid; grid-template-columns: 132px 1fr; column-gap: 16px; row-gap: 13px; font-size: 20px; line-height: 1.28; }
-    .lane dt { color: var(--muted); }
-    .lane dd { margin: 0; color: var(--ink); font-weight: 680; }
-    .shape-strip { margin-top: 29px; padding-top: 19px; border-top: 1px solid var(--line); }
-    .shape-strip span { display: block; margin-bottom: 8px; color: var(--muted); font-size: 16px; font-weight: 740; letter-spacing: .07em; text-transform: uppercase; }
-    .shape-strip code { color: var(--navy); font-size: 18px; line-height: 1.5; white-space: normal; }
-    .inventory { position: absolute; left: 92px; right: 92px; bottom: 95px; display: flex; align-items: baseline; justify-content: space-between; padding-top: 23px; border-top: 2px solid var(--line); }
-    .inventory .metric { font-size: 65px; }
-    .inventory p { margin: 0; color: var(--body); font-size: 23px; line-height: 1.35; text-align: right; }
+    .latency-layout { --left: 1.62fr; --right: .94fr; --gap: 46px; }
+    .bar-chart { position: relative; height: 540px; margin: 0; padding: 24px 20px 58px 80px; }
+    .bar-grid { position: absolute; left: 80px; right: 20px; top: 24px; bottom: 58px; display: flex; flex-direction: column; justify-content: space-between; }
+    .bar-grid span { position: relative; width: 100%; height: 0; border-top: 1px solid #dce5ed; }
+    .bar-grid span::before { content: attr(data-value); position: absolute; right: calc(100% + 14px); top: -11px; color: var(--muted); font-size: 17px; }
+    .bar-axis-label { position: absolute; left: 14px; top: 195px; writing-mode: vertical-rl; transform: rotate(180deg); color: var(--navy); font-size: 19px; font-weight: 720; }
+    .bars { position: absolute; left: 101px; right: 36px; top: 24px; bottom: 58px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 24px; align-items: end; }
+    .bar-group { height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; }
+    .bar-value { margin-bottom: 10px; color: var(--navy); font-size: 21px; font-weight: 780; opacity: 0; transition: opacity 240ms ease 720ms; }
+    .bar { width: 78%; height: var(--height); min-height: 8px; background: var(--color); border-radius: 4px 4px 0 0; transform: scaleY(0); transform-origin: bottom; }
+    .bar-label { position: absolute; top: calc(100% + 12px); width: 130px; color: var(--body); font-size: 17px; font-weight: 680; line-height: 1.2; text-align: center; }
+    body.is-active .bar { animation: grow-bar 700ms cubic-bezier(.2,.8,.2,1) forwards; animation-delay: var(--delay); }
+    body.is-active .bar-value { opacity: 1; }
+    @keyframes grow-bar { to { transform: scaleY(1); } }
+    .latency-summary .metric { margin-top: 12px; font-size: 72px; }
+    .latency-summary .context { margin: 3px 0 19px; color: var(--muted); font-size: 18px; }
+    .compare { margin: 0; color: var(--body); font-size: 22px; line-height: 1.42; }
+    .evidence-boundary { margin: 20px 0 0; padding-top: 17px; border-top: 1px solid var(--line); color: var(--muted); font-size: 17px; line-height: 1.4; }
   </style>
 </head>
 <body>
   <div class="stage">
     <section class="slide">
-      <div class="kicker reveal">02 / Method · Frozen Configuration</div>
-      <h1 class="slide-title reveal" style="--delay:70ms">Workload and Kernel Geometry</h1>
-      <main class="slide-content" style="bottom:170px">
-        <div class="geometry">
-          <section class="lane draft reveal" style="--delay:140ms">
-            <h2>Draft decode</h2><p class="model">Llama-3.2-1B · q = 1</p>
-            <dl><dt>Layers</dt><dd>16</dd><dt>Hidden width</dt><dd>2,048</dd><dt>GQA</dt><dd>32 query / 8 KV heads</dd><dt>Head size</dt><dd>64</dd><dt>KV length</dt><dd>513</dd></dl>
-            <div class="shape-strip"><span>Q projection</span><code>(1, 2048, 2048)</code></div>
-          </section>
-          <section class="lane reveal" style="--delay:240ms">
-            <h2>Target decode</h2><p class="model">Llama-3.2-3B · q = 1</p>
-            <dl><dt>Layers</dt><dd>28</dd><dt>Hidden width</dt><dd>3,072</dd><dt>GQA</dt><dd>24 query / 8 KV heads</dd><dt>Head size</dt><dd>128</dd><dt>KV length</dt><dd>513</dd></dl>
-            <div class="shape-strip"><span>Q projection</span><code>(1, 3072, 3072)</code></div>
-          </section>
-          <section class="lane verify reveal" style="--delay:340ms">
-            <h2>Target verification</h2><p class="model">Llama-3.2-3B · q = k + 1</p>
-            <dl><dt>Query lengths</dt><dd>3, 5, 9</dd><dt>Hidden width</dt><dd>3,072</dd><dt>GQA</dt><dd>24 query / 8 KV heads</dd><dt>Head size</dt><dd>128</dd><dt>KV length</dt><dd>512 + q</dd></dl>
-            <div class="shape-strip"><span>Attention</span><code>(q, 512 + q, 24, 8, 128)</code></div>
-          </section>
+      <div class="kicker reveal">03 / Evaluation · A30 Profile-Driven Simulation</div>
+      <h1 class="slide-title reveal" style="--delay:70ms">Verification Costs About One Target Decode</h1>
+      <main class="slide-content">
+        <div class="two-column latency-layout">
+          <figure class="bar-chart reveal" style="--delay:120ms" aria-label="A30 step latency bar chart">
+            <div class="bar-grid"><span data-value="12"></span><span data-value="10"></span><span data-value="8"></span><span data-value="6"></span><span data-value="4"></span><span data-value="2"></span><span data-value="0"></span></div>
+            <div class="bar-axis-label">Latency (ms)</div>
+            <div class="bars">
+              <div class="bar-group"><div class="bar-value">4.62</div><div class="bar" style="--height:177px;--color:var(--blue-bright);--delay:180ms"></div><div class="bar-label">Draft<br>q = 1</div></div>
+              <div class="bar-group"><div class="bar-value">10.65</div><div class="bar" style="--height:407px;--color:#4d5c6b;--delay:280ms"></div><div class="bar-label">Target<br>q = 1</div></div>
+              <div class="bar-group"><div class="bar-value">11.01</div><div class="bar" style="--height:421px;--color:var(--orange);--delay:380ms"></div><div class="bar-label">Verify<br>q = 3</div></div>
+              <div class="bar-group"><div class="bar-value">11.03</div><div class="bar" style="--height:422px;--color:var(--orange);--delay:480ms"></div><div class="bar-label">Verify<br>q = 5</div></div>
+              <div class="bar-group"><div class="bar-value">11.23</div><div class="bar" style="--height:429px;--color:var(--orange);--delay:580ms"></div><div class="bar-label">Verify<br>q = 9</div></div>
+            </div>
+          </figure>
+          <aside class="summary latency-summary reveal" style="--delay:330ms">
+            <p class="eyebrow">Simulated relationship</p>
+            <p class="metric">1.03× <span class="metric-unit">to 1.05×</span></p>
+            <p class="context">verification / target decode latency</p>
+            <p class="compare">A q = 3, 5, or 9 verification forward costs only slightly more than a q = 1 target decode.</p>
+            <hr class="rule">
+            <p class="takeaway">Verification costs far less than <strong>q serial target calls.</strong></p>
+            <p class="evidence-boundary">Native A30 kernel profiles cover q = 1, 3, 5, and 9. ASTRA-Sim produces the full-step latency shown here.</p>
+          </aside>
         </div>
       </main>
-      <div class="inventory reveal" style="--delay:480ms">
-        <p class="metric">1,812 <span class="metric-unit">operator records</span></p>
-        <p>Every layer, every scenario<br>batch 1 · BF16 · TP = 1</p>
-      </div>
-      <footer class="slide-footer"><span>Context length 512 · k ∈ {2, 4, 8}</span><span class="number">4</span></footer>
-      <aside hidden aria-label="Presenter notes">Explain the three execution types and why verification uses q equals k plus one. Highlight that the project uses the 1B and 3B Llama-3.2 pair, not an 8B target.</aside>
+      <footer class="slide-footer"><span class="source">LLMServingSim 2.0 / ASTRA-Sim · NVIDIA A30 native kernel profiles with dummy weights</span><span class="number">4</span></footer>
+      <aside hidden aria-label="Presenter notes">Shurui, about 70 seconds. Read the bars from draft to q equals nine. Call these profile-driven simulation results, not end-to-end full-model measurements. The near-flat verification cost supplies the amortization needed for speculative decoding.</aside>
     </section>
   </div>
   <script src="../scripts/slide-runtime.js"></script>

@@ -4,6 +4,12 @@ Animated HTML slides for the SpecWatt midterm presentation. The deck is
 self-contained and does not require a build step or external JavaScript
 packages.
 
+The presentation contains seven slides for an eight-minute update:
+
+- Slides 1–2: Jinglin, context and end-to-end evaluation plan.
+- Slides 3–5: Shurui, kernel validation and A30 timing results.
+- Slides 6–7: Muyun, EnergAIzer results, limitations, and next steps.
+
 ## Preview
 
 From the repository root:

@@ -3,60 +3,45 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>SpecWatt · Validation Evidence</title>
+  <title>SpecWatt · A30 Time per Token</title>
   <link rel="stylesheet" href="theme.css">
   <style>
-    .validation-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 34px; margin-top: 60px; }
-    .validation-item { min-height: 260px; padding: 28px 22px 22px; border-top: 4px solid var(--blue); }
-    .validation-item:nth-child(2) { border-color: var(--green); }
-    .validation-item:nth-child(3) { border-color: var(--orange); }
-    .validation-item:nth-child(4) { border-color: #8799aa; }
-    .validation-number { display: block; color: var(--navy); font-size: 77px; font-weight: 820; line-height: 1.08; letter-spacing: -.045em; }
-    .validation-item h2 { margin: 18px 0 9px; color: var(--navy); font-size: 24px; font-weight: 760; line-height: 1.28; }
-    .validation-item p { margin: 0; color: var(--body); font-size: 19px; line-height: 1.42; }
-    .validation-result { display: flex; align-items: center; justify-content: space-between; margin-top: 62px; padding: 28px 34px; background: #f4f8fb; border-left: 6px solid var(--green); }
-    .validation-result strong { color: var(--green); font-size: 38px; font-weight: 820; }
-    .validation-result span { color: var(--body); font-size: 22px; }
-    .validation-result code { color: var(--muted); font-size: 17px; }
+    .time-layout { --left: 1.66fr; --right: .94fr; --gap: 46px; }
+    .chart-wrap { margin: 0; width: 100%; }
+    .chart-wrap figcaption { margin: 1px 0 0 76px; color: var(--muted); font-size: 15px; }
+    .break-even { margin: 10px 0 7px; color: var(--blue); font-size: 72px; font-weight: 820; line-height: 1; letter-spacing: -.05em; }
+    .full-accept { margin: 22px 0 0; padding-top: 18px; border-top: 1px solid var(--line); color: var(--body); font-size: 20px; line-height: 1.48; }
+    .full-accept strong { color: var(--navy); }
+    .sweep-note { margin: 20px 0 0; color: var(--muted); font-size: 16px; line-height: 1.38; }
   </style>
 </head>
 <body>
   <div class="stage">
     <section class="slide">
-      <div class="kicker reveal">02 / Method · Validation</div>
-      <h1 class="slide-title reveal" style="--delay:70ms">The Kernel Inventory Matches Runtime Evidence</h1>
+      <div class="kicker reveal">03 / Evaluation · A30 Time per Generated Token</div>
+      <h1 class="slide-title reveal" style="--delay:70ms">All Tested k Values Break Even at 50% Acceptance</h1>
       <main class="slide-content">
-        <div class="validation-grid">
-          <section class="validation-item reveal" style="--delay:130ms"><span class="validation-number" data-count="382">0</span><h2>Structural checks</h2><p>Scenario membership, row count, and dimensions</p></section>
-          <section class="validation-item reveal" style="--delay:210ms"><span class="validation-number" data-count="450">0</span><h2>PyTorch comparisons</h2><p>Operator shapes from eager profiler traces</p></section>
-          <section class="validation-item reveal" style="--delay:290ms"><span class="validation-number" data-count="445">0</span><h2>Artifact files</h2><p>SHA256 manifest entries verified</p></section>
-          <section class="validation-item reveal" style="--delay:370ms"><span class="validation-number" data-count="5">0</span><h2>Simulation scenarios</h2><p>Draft, target, and three verification queries</p></section>
+        <div class="two-column time-layout">
+          <figure class="chart-wrap reveal" style="--delay:120ms">
+            <div data-line-chart>
+              <script type="application/json">{"width":920,"height":505,"xMin":0,"xMax":1,"yMin":0,"yMax":52,"xLabel":"Acceptance rate","yLabel":"Simulated time (ms/token)","xTicks":[{"value":0,"label":"0%"},{"value":0.25,"label":"25%"},{"value":0.5,"label":"50%"},{"value":0.75,"label":"75%"},{"value":1,"label":"100%"}],"yTicks":[0,10,20,30,40,50],"baseline":{"value":10.654134,"label":"Target baseline 10.65"},"series":[{"name":"k = 2","values":[[0,20.25423],[0.5,10.127115],[1,6.75141]]},{"name":"k = 4","values":[[0,29.520383],[0.25,14.760192],[0.5,9.840128],[0.75,7.380096],[1,5.904077]]},{"name":"k = 8","values":[[0,48.220007],[0.125,24.110004],[0.25,16.073336],[0.375,12.055002],[0.5,9.644001],[0.625,8.036668],[0.75,6.888572],[0.875,6.027501],[1,5.357779]]}],"ariaLabel":"A30 simulated time per generated token against acceptance rate"}</script>
+            </div>
+            <figcaption>Fixed accepted-token counts within each speculative round.</figcaption>
+          </figure>
+          <aside class="summary reveal" style="--delay:330ms">
+            <p class="eyebrow">First tested winning point</p>
+            <p class="break-even">50%</p>
+            <p class="body-copy">Accepted counts are 1 of 2, 2 of 4, and 4 of 8. Every curve falls below the target-only baseline.</p>
+            <p class="full-accept"><strong>At full acceptance</strong><br>k = 2: 6.75 ms/token<br>k = 4: 5.90 ms/token<br>k = 8: 5.36 ms/token</p>
+            <p class="sweep-note">These points use fixed acceptance counts. SDController traces will replace the sweep after full operator pricing works.</p>
+          </aside>
         </div>
-        <div class="validation-result reveal" style="--delay:480ms"><strong>0 failures</strong><span>Canonical shapes and runtime observations agree</span><code>SHA256 2f8700d9...a4e47b</code></div>
       </main>
-      <footer class="slide-footer"><span>Versioned SpecWatt, LLMServingSim, ASTRA-Sim, and EnergAIzer artifacts</span><span class="number">5</span></footer>
-      <aside hidden aria-label="Presenter notes">Use this slide to establish trust before presenting performance. The structural checks and profiler comparisons both pass with zero failures.</aside>
+      <footer class="slide-footer"><span class="source">A30 profile-driven simulation · Fixed acceptance sweep</span><span class="number">5</span></footer>
+      <aside hidden aria-label="Presenter notes">Shurui, about 65 seconds. The first tested point below the target baseline is 50 percent acceptance for all three k values. At full acceptance, larger k produces lower modeled time per token. Hand off to Muyun for the energy model and its current coverage boundary.</aside>
     </section>
   </div>
-  <script>
-    (function () {
-      let frame = null;
-      function run() {
-        cancelAnimationFrame(frame);
-        const start = performance.now();
-        const duration = 720;
-        const items = Array.from(document.querySelectorAll('[data-count]'));
-        function update(now) {
-          const progress = Math.min(1, (now - start) / duration);
-          const eased = 1 - Math.pow(1 - progress, 3);
-          items.forEach(function (item) { item.textContent = Math.round(Number(item.dataset.count) * eased).toLocaleString(); });
-          if (progress < 1) frame = requestAnimationFrame(update);
-        }
-        frame = requestAnimationFrame(update);
-      }
-      window.addEventListener('slideactive', run);
-    })();
-  </script>
+  <script src="../scripts/chart.js"></script>
   <script src="../scripts/slide-runtime.js"></script>
 </body>
 </html>

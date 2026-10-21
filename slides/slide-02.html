@@ -3,69 +3,87 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>SpecWatt · Research Question</title>
+  <title>SpecWatt · Context and Evaluation Plan</title>
   <link rel="stylesheet" href="theme.css">
   <style>
-    .decode-layout { display: grid; grid-template-columns: 930px 1fr; gap: 60px; align-items: center; height: 100%; }
-    .decode-figure { position: relative; padding-top: 18px; }
-    .decode-row { display: grid; grid-template-columns: 180px 1fr; gap: 24px; align-items: center; margin: 0 0 48px; }
-    .row-label { color: var(--navy); font-size: 23px; font-weight: 780; line-height: 1.25; }
-    .row-label span { display: block; margin-top: 6px; color: var(--muted); font-size: 17px; font-weight: 520; }
-    .calls { display: flex; align-items: center; gap: 12px; }
-    .call { position: relative; display: flex; align-items: center; justify-content: center; height: 70px; border-radius: 7px; color: var(--navy); font-size: 19px; font-weight: 760; opacity: 0; transform: translateY(14px); }
-    .target-call { width: 124px; background: #dce7f2; border: 1.5px solid #afc7dd; }
-    .draft-call { width: 82px; background: var(--green-soft); border: 1.5px solid #a9d3c5; color: #316d5b; }
-    .verify-call { width: 182px; background: var(--orange-soft); border: 1.5px solid #dfbaa0; color: #9b4e19; }
-    .arrow { color: #8ca0b4; font-size: 24px; opacity: 0; }
-    body.is-active .call, body.is-active .arrow { animation: enter-call 430ms ease forwards; animation-delay: calc(var(--i) * 120ms + 220ms); }
+    .context-grid { display: grid; grid-template-rows: 330px 1fr; gap: 22px; height: 100%; }
+    .question-row { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, .82fr); gap: 44px; align-items: center; }
+    .decode-figure { margin: 0; padding: 8px 0 0; }
+    .decode-row { display: grid; grid-template-columns: 168px 1fr; gap: 18px; align-items: center; margin-bottom: 28px; }
+    .row-label { color: var(--navy); font-size: 21px; font-weight: 780; line-height: 1.2; }
+    .row-label span { display: block; margin-top: 4px; color: var(--muted); font-size: 15px; font-weight: 560; }
+    .calls { display: flex; align-items: center; gap: 9px; }
+    .call { display: flex; align-items: center; justify-content: center; height: 58px; border-radius: 6px; font-size: 17px; font-weight: 760; opacity: 0; transform: translateY(12px); }
+    .target-call { width: 110px; background: #dce7f2; border: 1.5px solid #afc7dd; color: var(--navy); }
+    .draft-call { width: 69px; background: var(--green-soft); border: 1.5px solid #a9d3c5; color: #316d5b; }
+    .verify-call { width: 145px; background: var(--orange-soft); border: 1.5px solid #dfbaa0; color: #9b4e19; }
+    .arrow { color: #8ca0b4; font-size: 21px; opacity: 0; }
+    body.is-active .call, body.is-active .arrow { animation: enter-call 420ms ease forwards; animation-delay: calc(var(--i) * 90ms + 170ms); }
     @keyframes enter-call { to { opacity: 1; transform: none; } }
-    .round-brace { margin: -24px 0 0 204px; width: 666px; padding-top: 12px; border-top: 2px solid var(--line); text-align: center; color: var(--muted); font-size: 17px; }
-    .summary { padding-left: 38px; }
-    .question { margin: 8px 0 24px; color: var(--navy); font-size: 34px; font-weight: 770; line-height: 1.3; }
-    .equation { margin: 25px 0 0; padding: 18px 0 0; border-top: 1px solid var(--line); color: var(--body); font-size: 23px; line-height: 1.45; }
+    .round-note { margin: -8px 0 0 186px; width: 650px; padding-top: 9px; border-top: 2px solid var(--line); color: var(--muted); font-size: 15px; text-align: center; }
+    .question-block { padding-left: 34px; border-left: 2px solid var(--line); }
+    .question { margin: 8px 0 14px; color: var(--navy); font-size: 31px; font-weight: 780; line-height: 1.27; }
+    .question-block .body-copy { font-size: 21px; line-height: 1.38; }
+    .equation { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); color: var(--body); font-size: 19px; line-height: 1.35; }
     .equation strong { color: var(--blue); }
+    .pipeline { position: relative; display: grid; grid-template-columns: repeat(5, 1fr); gap: 22px; padding-top: 22px; border-top: 2px solid var(--line); }
+    .pipeline-step { position: relative; padding: 18px 17px 14px; border-top: 4px solid var(--line); background: #fff; }
+    .pipeline-step .index { display: block; margin-bottom: 9px; color: var(--blue); font-size: 15px; font-weight: 820; letter-spacing: .08em; }
+    .pipeline-step h2 { margin: 0 0 6px; color: var(--navy); font-size: 21px; font-weight: 770; line-height: 1.2; }
+    .pipeline-step p { margin: 0; color: var(--body); font-size: 16px; line-height: 1.34; }
+    body.is-active .pipeline-step { animation: step-focus 5.8s .7s ease-in-out infinite; animation-delay: calc(.7s + var(--step) * 1.02s); }
+    @keyframes step-focus { 0%, 19%, 100% { border-top-color: var(--line); background: #fff; transform: translateY(0); } 5%, 14% { border-top-color: var(--blue); background: #f5f9fd; transform: translateY(-5px); } }
   </style>
 </head>
 <body>
   <div class="stage">
     <section class="slide">
-      <div class="kicker reveal">01 / Motivation · Research Question</div>
+      <div class="kicker reveal">01 / Context · Research Question and End-to-End Plan</div>
       <h1 class="slide-title reveal" style="--delay:70ms">When Does Speculative Decoding Save Energy?</h1>
       <main class="slide-content">
-        <div class="decode-layout">
-          <figure class="decode-figure" aria-label="Normal and speculative decoding execution comparison">
-            <div class="decode-row">
-              <div class="row-label reveal" style="--delay:120ms">Target-only<span>Five serial target calls</span></div>
-              <div class="calls">
-                <div class="call target-call" style="--i:0">Target</div><div class="arrow" style="--i:1">›</div>
-                <div class="call target-call" style="--i:2">Target</div><div class="arrow" style="--i:3">›</div>
-                <div class="call target-call" style="--i:4">Target</div><div class="arrow" style="--i:5">›</div>
-                <div class="call target-call" style="--i:6">Target</div><div class="arrow" style="--i:7">›</div>
-                <div class="call target-call" style="--i:8">Target</div>
+        <div class="context-grid">
+          <div class="question-row">
+            <figure class="decode-figure" aria-label="Target-only and speculative decoding execution comparison">
+              <div class="decode-row">
+                <div class="row-label reveal" style="--delay:110ms">Target-only<span>Five serial target calls</span></div>
+                <div class="calls">
+                  <div class="call target-call" style="--i:0">Target</div><div class="arrow" style="--i:1">›</div>
+                  <div class="call target-call" style="--i:2">Target</div><div class="arrow" style="--i:3">›</div>
+                  <div class="call target-call" style="--i:4">Target</div><div class="arrow" style="--i:5">›</div>
+                  <div class="call target-call" style="--i:6">Target</div><div class="arrow" style="--i:7">›</div>
+                  <div class="call target-call" style="--i:8">Target</div>
+                </div>
               </div>
-            </div>
-            <div class="decode-row">
-              <div class="row-label reveal" style="--delay:240ms">Speculative round<span>Four draft calls, one verification</span></div>
-              <div class="calls">
-                <div class="call draft-call" style="--i:2">Draft</div><div class="arrow" style="--i:3">›</div>
-                <div class="call draft-call" style="--i:4">Draft</div><div class="arrow" style="--i:5">›</div>
-                <div class="call draft-call" style="--i:6">Draft</div><div class="arrow" style="--i:7">›</div>
-                <div class="call draft-call" style="--i:8">Draft</div><div class="arrow" style="--i:9">›</div>
-                <div class="call verify-call" style="--i:10">Target verify<br>q = 5</div>
+              <div class="decode-row">
+                <div class="row-label reveal" style="--delay:210ms">Speculative round<span>k = 4 example</span></div>
+                <div class="calls">
+                  <div class="call draft-call" style="--i:2">Draft</div><div class="arrow" style="--i:3">›</div>
+                  <div class="call draft-call" style="--i:4">Draft</div><div class="arrow" style="--i:5">›</div>
+                  <div class="call draft-call" style="--i:6">Draft</div><div class="arrow" style="--i:7">›</div>
+                  <div class="call draft-call" style="--i:8">Draft</div><div class="arrow" style="--i:9">›</div>
+                  <div class="call verify-call" style="--i:10">Verify q = 5</div>
+                </div>
               </div>
-            </div>
-            <div class="round-brace reveal" style="--delay:900ms">One round produces accepted draft tokens plus one target token</div>
-          </figure>
-          <aside class="summary reveal" style="--delay:440ms">
-            <p class="eyebrow">The trade-off</p>
-            <p class="question">Draft work adds cost. Verification removes repeated target calls.</p>
-            <p class="body-copy">Savings depend on the <strong>kernel shapes</strong>, their hardware cost, and how many draft tokens the target accepts.</p>
-            <div class="equation"><strong>Energy per token</strong><br>(k × draft step + verification step) / (accepted tokens + 1)</div>
-          </aside>
+              <div class="round-note reveal" style="--delay:840ms">Accepted draft tokens plus one target token per round</div>
+            </figure>
+            <aside class="question-block reveal" style="--delay:330ms">
+              <p class="eyebrow">The trade-off</p>
+              <p class="question">Draft work adds cost. One verification forward can replace several target calls.</p>
+              <p class="body-copy">Savings depend on kernel cost and the number of accepted draft tokens.</p>
+              <div class="equation"><strong>Cost per token</strong><br>(k × draft + verification) / (accepted + 1)</div>
+            </aside>
+          </div>
+          <div class="pipeline reveal" style="--delay:380ms" aria-label="SpecWatt evaluation plan">
+            <section class="pipeline-step" style="--step:0"><span class="index">01</span><h2>Freeze workload</h2><p>1B draft, 3B target, context 512, k = 2, 4, 8</p></section>
+            <section class="pipeline-step" style="--step:1"><span class="index">02</span><h2>Export shapes</h2><p>GEMM and attention geometry for every layer</p></section>
+            <section class="pipeline-step" style="--step:2"><span class="index">03</span><h2>Validate</h2><p>Structural checks and profiler traces</p></section>
+            <section class="pipeline-step" style="--step:3"><span class="index">04</span><h2>Price operators</h2><p>A30 timing and A100 energy models</p></section>
+            <section class="pipeline-step" style="--step:4"><span class="index">05</span><h2>Compute per token</h2><p>Acceptance sweeps and break-even points</p></section>
+          </div>
         </div>
       </main>
-      <footer class="slide-footer"><span>Speculative decoding cost model</span><span class="number">2</span></footer>
-      <aside hidden aria-label="Presenter notes">Contrast five target-only calls with one speculative round at k equals four. The speculative path only wins when verification amortizes target work across enough accepted tokens.</aside>
+      <footer class="slide-footer"><span>Current midterm scope: fixed acceptance sweeps with versioned artifacts</span><span class="number">2</span></footer>
+      <aside hidden aria-label="Presenter notes">Jinglin, about 75 seconds. Establish the context, compare target-only decoding with one speculative round, and walk through the five-stage evaluation plan. Hand off to Shurui for kernel construction and validation.</aside>
     </section>
   </div>
   <script src="../scripts/slide-runtime.js"></script>

@@ -37,7 +37,7 @@ body {
 .slide { position: absolute; inset: 0; overflow: hidden; background: var(--paper); }
 .kicker {
   position: absolute;
-  top: 57px;
+  top: 44px;
   left: 90px;
   right: 90px;
   color: var(--blue);
@@ -49,28 +49,28 @@ body {
 }
 .slide-title {
   position: absolute;
-  top: 105px;
+  top: 84px;
   left: 88px;
   right: 88px;
   margin: 0;
   color: var(--navy);
-  font-size: 56px;
+  font-size: 52px;
   font-weight: 760;
   line-height: 1.15;
   letter-spacing: -.027em;
 }
 .slide-content {
   position: absolute;
-  top: 236px;
+  top: 190px;
   left: 90px;
   right: 90px;
-  bottom: 104px;
+  bottom: 76px;
 }
 .slide-footer {
   position: absolute;
   left: 90px;
   right: 66px;
-  bottom: 38px;
+  bottom: 27px;
   display: flex;
   align-items: baseline;
   justify-content: space-between;

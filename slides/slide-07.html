@@ -3,43 +3,60 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>SpecWatt · A30 Time per Token</title>
+  <title>SpecWatt · Conclusions and Next Steps</title>
   <link rel="stylesheet" href="theme.css">
   <style>
-    .time-layout { --left: 1.62fr; --right: 1fr; }
-    .chart-wrap { margin: 0; width: 100%; }
-    .chart-wrap figcaption { margin: 2px 0 0 76px; color: var(--muted); font-size: 16px; }
-    .break-even { margin: 13px 0 8px; color: var(--blue); font-size: 74px; font-weight: 820; line-height: 1; letter-spacing: -.05em; }
-    .full-accept { margin: 26px 0 0; padding-top: 22px; border-top: 1px solid var(--line); color: var(--body); font-size: 21px; line-height: 1.5; }
-    .full-accept strong { color: var(--navy); }
+    .closing-layout { display: grid; grid-template-columns: 1.08fr .92fr; gap: 58px; height: 100%; align-items: start; }
+    .claim { margin: 7px 0 22px; color: var(--navy); font-size: 32px; font-weight: 760; line-height: 1.28; }
+    .claim strong { color: var(--blue); }
+    .evidence-list { margin: 0; padding: 0; list-style: none; }
+    .evidence-list li { position: relative; margin: 0 0 16px; padding-left: 38px; color: var(--body); font-size: 20px; line-height: 1.34; }
+    .evidence-list li::before { content: "✓"; position: absolute; left: 0; top: -1px; color: var(--green); font-size: 24px; font-weight: 820; }
+    .boundary { margin-top: 20px; padding: 18px 22px; background: #f6f8fa; border-left: 5px solid var(--orange); }
+    .boundary h3 { margin: 0 0 5px; color: var(--navy); font-size: 19px; }
+    .boundary p { margin: 0; color: var(--body); font-size: 17px; line-height: 1.36; }
+    .next-steps { padding-left: 36px; border-left: 2px solid var(--line); }
+    .next-step { display: grid; grid-template-columns: 42px 1fr; gap: 15px; margin-top: 21px; }
+    .next-step .index { color: var(--blue); font-size: 18px; font-weight: 820; }
+    .next-step h3 { margin: 0 0 5px; color: var(--navy); font-size: 23px; font-weight: 760; }
+    .next-step p { margin: 0; color: var(--body); font-size: 18px; line-height: 1.37; }
+    .final-line { margin-top: 28px; padding-top: 18px; border-top: 2px solid var(--line); color: var(--navy); font-size: 24px; font-weight: 760; line-height: 1.3; }
+    .final-line strong { color: var(--blue); }
   </style>
 </head>
 <body>
   <div class="stage">
     <section class="slide">
-      <div class="kicker reveal">03 / Evaluation · A30 Time per Generated Token</div>
-      <h1 class="slide-title reveal" style="--delay:70ms">All Tested k Values Break Even at 50% Acceptance</h1>
+      <div class="kicker reveal">04 / Conclusions · Midterm Status</div>
+      <h1 class="slide-title reveal" style="--delay:70ms">Current Result and Next Steps</h1>
       <main class="slide-content">
-        <div class="two-column time-layout">
-          <figure class="chart-wrap reveal" style="--delay:120ms">
-            <div data-line-chart>
-              <script type="application/json">{"width":900,"height":475,"xMin":0,"xMax":1,"yMin":0,"yMax":52,"xLabel":"Acceptance rate","yLabel":"Simulated time (ms/token)","xTicks":[{"value":0,"label":"0%"},{"value":0.25,"label":"25%"},{"value":0.5,"label":"50%"},{"value":0.75,"label":"75%"},{"value":1,"label":"100%"}],"yTicks":[0,10,20,30,40,50],"baseline":{"value":10.654134,"label":"Target baseline 10.65"},"series":[{"name":"k = 2","values":[[0,20.25423],[0.5,10.127115],[1,6.75141]]},{"name":"k = 4","values":[[0,29.520383],[0.25,14.760192],[0.5,9.840128],[0.75,7.380096],[1,5.904077]]},{"name":"k = 8","values":[[0,48.220007],[0.125,24.110004],[0.25,16.073336],[0.375,12.055002],[0.5,9.644001],[0.625,8.036668],[0.75,6.888572],[0.875,6.027501],[1,5.357779]]}],"ariaLabel":"A30 simulated time per generated token against acceptance rate"}</script>
+        <div class="closing-layout">
+          <section class="reveal" style="--delay:120ms">
+            <p class="eyebrow">What the evidence supports</p>
+            <p class="claim">A30 verification costs about one target decode. At 50% acceptance, modeled time per token <strong>beats target-only decoding</strong> for every tested k.</p>
+            <ul class="evidence-list">
+              <li>Kernel shapes cover draft, target decode, and verification at k = 2, 4, and 8.</li>
+              <li>Structural checks and profiler comparisons pass with zero failures.</li>
+              <li>Commands, versions, hashes, and simulator outputs make the result reproducible.</li>
+            </ul>
+            <div class="boundary">
+              <h3>Current energy boundary</h3>
+              <p>The A100 energy sweep covers the supported GEMM subset. It does not establish full-GPU energy savings yet.</p>
             </div>
-            <figcaption>Fixed accepted-token counts within each speculative round.</figcaption>
-          </figure>
-          <aside class="summary reveal" style="--delay:330ms">
-            <p class="eyebrow">First winning point</p>
-            <p class="break-even">50%</p>
-            <p class="body-copy">Accepted counts are 1 of 2, 2 of 4, and 4 of 8. Each curve falls below the target-only baseline.</p>
-            <p class="full-accept"><strong>At full acceptance</strong><br>k = 2: 6.75 ms/token<br>k = 4: 5.90 ms/token<br>k = 8: 5.36 ms/token</p>
-          </aside>
+          </section>
+          <section class="next-steps reveal" style="--delay:270ms">
+            <p class="eyebrow">Next experiments</p>
+            <div class="next-step"><span class="index">01</span><div><h3>Price asymmetric attention</h3><p>Pass query length and KV length separately for q = 1, 3, 5, and 9.</p></div></div>
+            <div class="next-step"><span class="index">02</span><div><h3>Measure real acceptance</h3><p>Replace fixed counts with SDController traces from a documented prompt set.</p></div></div>
+            <div class="next-step"><span class="index">03</span><div><h3>Expand the sweep</h3><p>Evaluate more model pairs, context lengths, batches, and hardware after full pricing works.</p></div></div>
+            <p class="final-line"><strong>Next milestone:</strong> full operator energy per generated token with measured acceptance.</p>
+          </section>
         </div>
       </main>
-      <footer class="slide-footer"><span class="source">A30 profile-driven result · Fixed acceptance sweep</span><span class="number">7</span></footer>
-      <aside hidden aria-label="Presenter notes">The first tested point below the target baseline is 50 percent acceptance for all three k values. At full acceptance, larger k produces lower modeled time per token.</aside>
+      <footer class="slide-footer"><span>SpecWatt · Midterm Presentation</span><span class="number">7</span></footer>
+      <aside hidden aria-label="Presenter notes">Muyun, about 50 seconds. Close with the strongest supported timing claim, keep the supported-GEMM energy boundary explicit, and state the next sequence: attention pricing, measured acceptance, and then a broader sweep.</aside>
     </section>
   </div>
-  <script src="../scripts/chart.js"></script>
   <script src="../scripts/slide-runtime.js"></script>
 </body>
 </html>
